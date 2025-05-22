@@ -1,6 +1,6 @@
-# ZapTI
+# Chamaí
 
-**ZapTI** é uma plataforma para gerenciamento de chamados, desenvolvida para facilitar a comunicação entre usuários e técnicos, registrando e acompanhando o progresso dos chamados.
+**Chamaí** é uma plataforma para gerenciamento de chamados, desenvolvida para facilitar a comunicação entre usuários e técnicos, registrando e acompanhando o progresso dos chamados.
 
 ## Funcionalidades
 
