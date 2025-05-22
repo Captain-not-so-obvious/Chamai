@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .            
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: ./frontend   
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"           # 5173 externo → 80 interno do Nginx
+    depends_on:
+      - api
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: zapti
+      POSTGRES_USER: zapti
+      POSTGRES_PASSWORD: zapti
+    ports:
+      - "5432:5432"
