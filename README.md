@@ -21,7 +21,7 @@
 ## Estrutura do Projeto
 
 ```plaintext
-ZapTI/
+Chamaí/
 ├── config/
 │   └── db.js            # Configuração do banco de dados
 ├── controllers/
@@ -45,8 +45,8 @@ ZapTI/
 1. Clone o repositório para sua máquina local:
 
    ```bash
-   git clone https://github.com/Captain-not-so-obvious/zapti.git
-   cd zapti
+   git clone https://github.com/Captain-not-so-obvious/Chamai.git
+   cd Chamaí
    ```
 
 2. Instale as dependências:

@@ -1,82 +1,93 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import "../styles/global.css";
 
-function FormularioChamado({ usuarioId }) {
-    const [formData, setFormData] = useState({
-        titulo: "",
-        descricao: "",
-        prioridade: "baixa",
-    });
-
+export default function FormularioChamado() {
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [titulo, setTitulo] = useState("");
+    const [descricao, setDescricao] = useState("");
+    const [prioridade, setPrioridade] = useState("");
     const [mensagem, setMensagem] = useState("");
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!nome || !email || !titulo || !descricao || !prioridade) {
+            setMensagem("Por favor, preencha todos os campos.");
+            return;
+        }
+
         try {
-            await axios.post("http://localhost:3000/chamados", {
-                ...formData,
-                usuarioId,
+            const response = await fetch("http://localhost:3000/chamados", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    solicitanteNome: nome,
+                    solicitanteEmail: email,
+                    titulo,
+                    descricao,
+                    prioridade,
+                }),
             });
 
-            setMensagem("Chamado enviado com sucesso!");
-            setFormData({ titulo: "", descricao: "", prioridade: "baixa" });
+            const data = await response.json();
+
+            if (response.ok) {
+                setMensagem("Chamado enviado com sucesso!");
+                setNome("");
+                setEmail("");
+                setTitulo("");
+                setDescricao("");
+                setPrioridade("");
+            } else {
+                setMensagem(data.message || "Erro ao enviar chamado.");
+            }
         } catch (error) {
-            console.error("Erro ao enviar chamado:", error);
-            setMensagem("Erro ao enviar chamado.");
+            setMensagem("Erro de conexão com o servidor.");
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="border p-4 rounded shadow-sm">
-            <h2 className="mb-3">Abrir Chamado</h2>
-            <div className="mb-3">
-                <label className="form-label">Título</label>
+        <div className="form-container">
+            <h2>Abrir Novo Chamado</h2>
+            {mensagem && <p className="message">{mensagem}</p>}
+            <form onSubmit={handleSubmit}>
                 <input
-                type="text"
-                className="form-control"
-                name="titulo"
-                value={formData.titulo}
-                onChange={handleChange}
-                required />
-            </div>
-
-            <div className="mb-3">
-                <label className="form-label">Descrição</label>
+                    type="text"
+                    placeholder="Seu Nome"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                />
+                <input
+                    type="email"
+                    placeholder="seuemail@provedor.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Título do chamado"
+                    value={titulo}
+                    onChange={(e) => setTitulo(e.target.value)}
+                />
                 <textarea
-                className="form-control"
-                name="descricao"
-                value={formData.descricao}
-                onChange={handleChange}
-                rows="4"
-                required></textarea>
-            </div>
-
-            <div className="mb-3">
-                <label className="form-label">Prioridade</label>
+                    placeholder="Descreva seu problema"
+                    value={descricao}
+                    onChange={(e) => setDescricao(e.target.value)}
+                />
                 <select
-                className="form-select"
-                name="prioridade"
-                value={formData.prioridade}
-                onChange={handleChange}
+                    value={prioridade}
+                    onChange={(e) => setPrioridade(e.target.value)}
                 >
+                    <option value="">Selecione a prioridade</option>
                     <option value="baixa">Baixa</option>
                     <option value="media">Média</option>
                     <option value="alta">Alta</option>
                 </select>
-            </div>
-
-            <button type="submit" className="btn btn-primary">
-                Enviar Chamado
-            </button>
-
-            {mensagem && <div className="mt-3 alert alert-info">{mensagem}</div>}
-        </form>
+                <button type="submit">Enviar Chamado</button>
+            </form>
+        </div>
     );
 }
-
-export default FormularioChamado;

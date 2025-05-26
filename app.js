@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require('cors');
 const app = express();
 const db = require("./models/index");
 const { sequelize } = require("./models"); // Alterado para importar diretamente do models
@@ -8,6 +9,9 @@ const usuarioRoutes = require("./routes/usuario.routes")
 const historicoRoutes = require("./routes/historico.routes");
 
 // Middlewares
+app.use(cors({
+  origin: 'http://localhost:5173' // Permite requisições do frontend
+}));
 app.use(express.json());
 
 // Rotas

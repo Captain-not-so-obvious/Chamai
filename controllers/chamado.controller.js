@@ -4,6 +4,11 @@ const { Usuario, Chamado, Historico } = db;
 const criarChamado = async (req, res) => {
     const { solicitanteNome, solicitanteEmail, titulo, descricao, prioridade } = req.body;
 
+    // Validação dos dados recebidos
+    if (!solicitanteNome || !solicitanteEmail || !titulo || !descricao || !prioridade) {
+        return res.status(400).json({ message: "Todos os campos são obrigatórios." });
+    }
+
     try {
         //Verifica se o solicitante já existe
         let usuario = await Usuario.findOne({ where: { email: solicitanteEmail } });
