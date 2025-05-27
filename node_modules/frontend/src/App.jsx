@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
 import PainelTecnico from "./pages/PainelTecnico";
 import NovoChamado from "./pages/NovoChamado";

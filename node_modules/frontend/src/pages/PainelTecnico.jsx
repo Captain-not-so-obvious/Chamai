@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ChamadoCard from "../components/ChamadoCard";
 import { jwtDecode } from "jwt-decode";
+import "../styles/PainelTecnico.css";
 
 export default function PainelTecnico() {
     const [chamados, setChamados] = useState([]);

@@ -1,9 +1,10 @@
-import "../styles/ChamadoCard.css"
+import "../styles/ChamadoCard.css";
+import "../styles/PainelTecnico.css";
 
 export default function ChamadoCard({ chamado, onAtribuir, onResolver }) {
     return (
-        <div className="chamado-card">
-            <h3>{chamado.titulo}</h3>
+        <div className="card-animado chamado-card">
+            <h4>{chamado.titulo}</h4>
             <p><strong>Descrição:</strong>{chamado.descricao}</p>
             <p><strong>Prioridade:</strong> {chamado.prioridade}</p>
             <p><strong>Status:</strong> {chamado.status}</p>
