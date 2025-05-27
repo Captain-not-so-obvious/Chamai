@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/global.css";
 
 export default function FormularioChamado() {
@@ -88,6 +89,9 @@ export default function FormularioChamado() {
                 </select>
                 <button type="submit">Enviar Chamado</button>
             </form>
+            <p className="login-link">
+                <Link to="/login">Clique aqui para fazer login (apenas para técnicos)</Link>
+            </p>
         </div>
     );
 }

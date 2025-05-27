@@ -51,6 +51,10 @@ const login = async (req, res) => {
             return res.status(404).json({ erro: "Usuário não encontrado." });
         }
 
+        if (!usuario.senha) {
+            return res.status(500).json({ erro: "Senha do usuário não encontrada." });
+        }
+
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
         if (!senhaValida) {
@@ -69,6 +73,7 @@ const login = async (req, res) => {
         res.status(500).json({ erro: "Erro ao fazer login." });
     }
 };
+
 
 const listarUsuarios = async (req, res) => {
     try {

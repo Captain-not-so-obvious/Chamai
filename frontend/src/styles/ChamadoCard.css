@@ -1,0 +1,16 @@
+.chamado-card {
+    border: 1px solid #E0E1DD;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    background-color: #E0E1DD;
+}
+
+.chamado-card h3 {
+    margin-top: 0;
+}
+
+.botoes button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+}

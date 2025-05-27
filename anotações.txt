@@ -4,4 +4,5 @@
 4 - Adicionar histórico ao chamado (feito)
 5 - Corrigir o envio de e-mail ( feito )
 6 - Criar formulário para abertura de chamado ( feito )
+8 - Criar painel de login
 7 - Painel administrativo usando gráficos (Chart.js)
