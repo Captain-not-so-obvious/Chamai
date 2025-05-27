@@ -130,8 +130,12 @@ button:hover {
   background-color: #415a77;
 }
 
-login-message {
+.login-message {
   color: #e0e1dd;
   margin-bottom: 1rem;
   text-align: center;
+}
+
+.painel-container h2{
+  color: #e0e1dd;
 }

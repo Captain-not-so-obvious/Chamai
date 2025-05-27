@@ -27,9 +27,9 @@ export default function PainelTecnico() {
     const [loading, setloading] = useState(false);
 
     const carregarChamados = async (token) => {
-        setLoading(true);
+        setloading(true);
         try {
-            const response = await fetch("http://localhost:3000/chamados", {
+            const response = await fetch("http://localhost:3000/chamados/status/aberto", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await response.json();
@@ -37,7 +37,7 @@ export default function PainelTecnico() {
         } catch (error) {
             setMensagem("Erro ao carregar chamados.");
         } finally {
-            setLoading(false);
+            setloading(false);
         }
     };
 
@@ -66,10 +66,10 @@ export default function PainelTecnico() {
     };
 
     return (
-        <div>
-            <h2>Painel do Técnico</h2>
+        <div className="painel-container">
+            <h2>Chamados em Aberto</h2>
             {mensagem && <p>{mensagem}</p>}
-            {chamados.length === 0 && !mensagem && <p>Carregando chamados...</p>}
+            {loading && <p>Carregando chamados...</p>}
             {chamados.map((chamado) => (
                 <ChamadoCard
                     key={chamado.id}
