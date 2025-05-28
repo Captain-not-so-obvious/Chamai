@@ -6,7 +6,7 @@
 6 - Criar formulário para abertura de chamado ( feito )
 7 - Criar painel de login ( feito )
 8 - Painel técnico aparece só chamados em aberto ( feito )
-9 - Relatório de chamados resolvidos com histórico
+9 - Relatório de chamados resolvidos com histórico ( feito )
 10 - Relatório de média de resolução de chamados por técnico com o tempo de resolução
 11 - Relatório de chamados abertos por usuário
 12 - Filtro e busca por chamados
@@ -15,3 +15,7 @@
 15 - Permitir ao técnico mudar a prioridade dos chamados em aberto de acordo com a necessidade do setor
 16 - Painel de desempenho individual do técnico
 17 - Aplicar machine learning para elencar categoria e prioridade de chamado com base na descrição
+18 - Tela para cadastro de técnicos
+19 - Tela para cadastro de chamados por parte do técnico
+20 - Criar Select para nome do setor no formulário, o banco já está pronto para receber estes dados
+21 - Relatório chamados abertos por setor

@@ -136,11 +136,43 @@ const atribuirTecnico = async (req, res) => {
     }
 };
 
+const listarChamadosResolvidosComHistorico = async (req, res) => {
+         try {
+    const chamadosResolvidos = await Chamado.findAll({
+      where: { status: "resolvido" },
+      include: [
+        {
+          model: Usuario,
+          as: "solicitante",
+          attributes: ["id", "nome"]
+        },
+        {
+          model: Historico,
+          as: "historico",
+          attributes: ["id", "descricao", "dataEvento"],
+          include: [
+            {
+              model: Usuario,
+              attributes: ["nome"]
+            }
+          ]
+        }
+      ]
+    });
+
+    res.json(chamadosResolvidos);
+  } catch (error) {
+    console.error("Erro ao buscar chamados resolvidos:", error);
+    res.status(500).json({ erro: "Erro ao buscar chamados resolvidos" });
+  }
+};
+
 module.exports = {
     criarChamado,
     resolverChamado,
     listarChamados,
     listarChamadosPorUsuario,
     listarChamadosPorStatus,
+    listarChamadosResolvidosComHistorico,
     atribuirTecnico,
 };

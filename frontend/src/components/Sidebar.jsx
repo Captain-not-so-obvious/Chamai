@@ -1,4 +1,4 @@
-import { Navlink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import "../styles/Sidebar.css";
 
 export default function Sidebar() {
@@ -9,15 +9,15 @@ export default function Sidebar() {
                 <ul>
                     <li><NavLink to="/painel-tecnico">📋 Painel Técnico</NavLink></li>
                     <li className='submenu-title'>📊 Relatórios</li>
-                    <li><Navlink to="/relatorios/resolvidos">Chamados Resolvidos</Navlink></li>
-                    <li><Navlink to="/relatorios/media-tecnico">Média de chamados por Técnicos</Navlink></li>
-                    <li><Navlink to="/relatorios/abertos-por-usuario">Chamados Abertos por Usuário</Navlink></li>
-                    <li><Navlink to="/relatorios/sla">Dashboard de SLA</Navlink></li>
-                    <li><Navlink to="/relatorios/exportar">Exportar Relatórios</Navlink></li>
-                    <li><Navlink to="/relatorios/filtro-busca">Filtro e Busca</Navlink></li>
+                    <li><NavLink to="/relatorios/resolvidos">Chamados Resolvidos</NavLink></li>
+                    <li><NavLink to="/relatorios/media-tecnico">Média de chamados por Técnicos</NavLink></li>
+                    <li><NavLink to="/relatorios/abertos-por-usuario">Chamados Abertos por Usuário</NavLink></li>
+                    <li><NavLink to="/relatorios/sla">Dashboard de SLA</NavLink></li>
+                    <li><NavLink to="/relatorios/exportar">Exportar Relatórios</NavLink></li>
+                    <li><NavLink to="/relatorios/filtro-busca">Filtro e Busca</NavLink></li>
                     <li className='submenu-title'>🤖 Inteligência Artificial</li>
-                    <li><Navlink to="/ia/classificacao">Classificação Automática</Navlink></li>
-                    <li><Navlink to="/">🏠 Home</Navlink></li>
+                    <li><NavLink to="/ia/classificacao">Classificação Automática</NavLink></li>
+                    <li><NavLink to="/">🏠 Home</NavLink></li>
                 </ul>
             </nav>
         </div>

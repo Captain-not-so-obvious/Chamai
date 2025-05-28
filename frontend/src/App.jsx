@@ -1,29 +1,36 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
+import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import PainelTecnico from "./pages/PainelTecnico";
 import NovoChamado from "./pages/NovoChamado";
+import RelatorioResolvidos from "./pages/RelatorioChamadosResolvidos";
 import RotaPrivada from "./components/RotaPrivada";
 
 function App() {
   return (
-    <div className="page-container">
-      <Router>
-        <Routes>
-          <Route path="/" element={<Navigate to="/novo-chamado" />} />
-          <Route path="/novo-chamado" element={<NovoChamado />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/painel-tecnico"
-            element={
-              <RotaPrivada>
-                <PainelTecnico />
-              </RotaPrivada>
-            }
-          />
-        </Routes>
-      </Router>
-    </div>
+    <Router>
+      <Routes>
+        {/* Rotas públicas */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/novo-chamado" element={<NovoChamado />} />
+
+        {/* Redireciona a raiz para novo-chamado */}
+        <Route path="/" element={<Navigate to="/novo-chamado" />} />
+
+        {/* Rotas privadas protegidas com Layout e Sidebar */}
+        <Route 
+          element={
+            <RotaPrivada>
+              <Layout />
+            </RotaPrivada>
+          }
+        >
+          <Route path="/painel-tecnico" element={<PainelTecnico />} />
+          <Route path="/relatorios/resolvidos" element={<RelatorioResolvidos />} />
+          {/* Adicione outras rotas privadas aqui */}
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 

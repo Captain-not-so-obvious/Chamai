@@ -5,7 +5,7 @@ export default function RelatorioResolvidos() {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        fetch("http://loaclhost:3000/chamados/resolvidos/historico", {
+        fetch("http://localhost:3000/chamados/resolvidos/historico", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -21,13 +21,12 @@ export default function RelatorioResolvidos() {
             {chamados.map((chamado) => (
                 <div key={chamado.id} className="chamado-card">
                     <h4 className="chamado-titulo">{chamado.titulo}</h4>
-                    <p className="chamado-info">Aberto por: {chamado.usuario?.nome}</p>
                     <p className="chamado-status">Status: {chamado.status}</p>
                     <h5 className="historico-titulo">Histórico:</h5>
                     <ul className="historico-lista">
                         {chamado.historico.map((item, idx) => (
                             <li key={idx}>
-                                {item.descricao} - {new Date(item.data).toLocaleString()}
+                                {item.descricao} - {new Date(item.dataEvento).toLocaleString()} - Autor: {item.Usuario?.nome || "Desconhecido"}
                             </li>
                         ))}
                     </ul>
