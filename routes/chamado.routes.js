@@ -14,6 +14,7 @@ router.get("/", authMiddleware, chamadoController.listarChamados);
 router.get("/usuario/:id", authMiddleware, chamadoController.listarChamadosPorUsuario);
 router.get("/status/:status", authMiddleware, chamadoController.listarChamadosPorStatus);
 router.get("/resolvidos/historico", authMiddleware, chamadoController.listarChamadosResolvidosComHistorico);
+router.get("/resolvidos", authMiddleware, chamadoController.listarChamadosResolvidosComFiltro);
 router.put("/:id/atribuir", authMiddleware, chamadoController.atribuirTecnico);
 
 module.exports = router;

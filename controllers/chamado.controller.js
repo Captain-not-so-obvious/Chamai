@@ -1,35 +1,32 @@
 const db = require("../models");
 const { Usuario, Chamado, Historico } = db;
+const { Op } = require("sequelize");
 
 const criarChamado = async (req, res) => {
     const { solicitanteNome, solicitanteEmail, titulo, descricao, prioridade } = req.body;
 
-    // Validação dos dados recebidos
     if (!solicitanteNome || !solicitanteEmail || !titulo || !descricao || !prioridade) {
         return res.status(400).json({ message: "Todos os campos são obrigatórios." });
     }
 
     try {
-        //Verifica se o solicitante já existe
         let usuario = await Usuario.findOne({ where: { email: solicitanteEmail } });
 
         if (!usuario) {
-            // Cria um novo usuário
             usuario = await Usuario.create({
                 nome: solicitanteNome,
                 email: solicitanteEmail,
                 tipo: "usuario",
             });
         }
-        // Cria o chamado vinculado ao usuário
+
         const chamado = await Chamado.create({
             titulo,
             descricao,
             prioridade,
-            usuarioId: usuario.id // associação
+            usuarioId: usuario.id
         });
 
-        // Adiciona entrada no histórico
         await Historico.create({
             chamadoId: chamado.id,
             descricao: "Chamado criado pelo solicitante",
@@ -79,7 +76,7 @@ const resolverChamado = async (req, res) => {
 };
 
 const listarChamados = async (req, res) => {
-    const { usuarioId, status } = req.query; //Recebe parâmetros de consulta
+    const { usuarioId, status } = req.query;
 
     try {
         let chamados;
@@ -88,7 +85,7 @@ const listarChamados = async (req, res) => {
         } else if (status) {
             chamados = await Chamado.findAll({ where: { status } });
         } else {
-            chamados = await Chamado.findAll(); // Caso nenhum filtro seja passado, lista todos
+            chamados = await Chamado.findAll();
         }
 
         res.json(chamados);
@@ -118,8 +115,8 @@ const listarChamadosPorStatus = async (req, res) => {
 };
 
 const atribuirTecnico = async (req, res) => {
-    const { id } = req. params; // ID do chamado
-    const { tecnicoId } = req.body; // ID do técnico
+    const { id } = req.params;
+    const { tecnicoId } = req.body;
 
     try {
         const chamado = await Chamado.findByPk(id);
@@ -137,35 +134,58 @@ const atribuirTecnico = async (req, res) => {
 };
 
 const listarChamadosResolvidosComHistorico = async (req, res) => {
-         try {
-    const chamadosResolvidos = await Chamado.findAll({
-      where: { status: "resolvido" },
-      include: [
-        {
-          model: Usuario,
-          as: "solicitante",
-          attributes: ["id", "nome"]
-        },
-        {
-          model: Historico,
-          as: "historico",
-          attributes: ["id", "descricao", "dataEvento"],
-          include: [
-            {
-              model: Usuario,
-              attributes: ["nome"]
-            }
-          ]
-        }
-      ]
-    });
+    try {
+        const { tecnicoId, dataInicio, dataFim } = req.query;
 
-    res.json(chamadosResolvidos);
-  } catch (error) {
-    console.error("Erro ao buscar chamados resolvidos:", error);
-    res.status(500).json({ erro: "Erro ao buscar chamados resolvidos" });
-  }
+        const filtros = {
+            status: "resolvido"
+        };
+
+        if (tecnicoId) {
+            filtros.tecnicoId = tecnicoId;
+        }
+
+        if (dataInicio && dataFim) {
+            filtros.dataFechamento = {
+                [Op.between]: [new Date(dataInicio), new Date(dataFim)]
+            };
+        }
+
+        const chamados = await Chamado.findAll({
+            where: filtros,
+            include: [
+                {
+                    model: Usuario,
+                    as: "tecnico",
+                    attributes: ["id", "nome"]
+                },
+                {
+                    model: Usuario,
+                    as: "solicitante",
+                    attributes: ["id", "nome"]
+                },
+                {
+                    model: Historico,
+                    as: "historico",
+                    attributes: ["id", "descricao", "dataEvento"],
+                    include: [
+                        {
+                            model: Usuario,
+                            attributes: ["nome"]
+                        }
+                    ]
+                }
+            ],
+            order: [["dataFechamento", "DESC"]]
+        });
+
+        res.json(chamados);
+    } catch (error) {
+        console.error("Erro ao buscar chamados resolvidos:", error);
+        res.status(500).json({ erro: "Erro ao buscar chamados resolvidos" });
+    }
 };
+
 
 module.exports = {
     criarChamado,

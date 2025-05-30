@@ -87,8 +87,22 @@ const listarUsuarios = async (req, res) => {
     }
 };
 
+const listarTecnicos = async (req, res) => {
+    try {
+        const tecnicos = await Usuario.findAll({
+            where: { tipo: "tecnico" },
+            attributes: ["id", "nome"]
+        });
+        res.json(tecnicos);
+    } catch (error) {
+        console.error("Erro ao buscar técnicos", error);
+        res.status(500).json({ mensagem: "Erro ao buscar técnicos" });
+    }
+};
+
 module.exports = {
     criarUsuario,
     login,
     listarUsuarios,
+    listarTecnicos,
 };

@@ -10,5 +10,6 @@ router.post("/registro", usuarioController.criarUsuario);
 router.post("/login", usuarioController.login);
 
 router.get("/", authMiddleware, usuarioController.listarUsuarios);
+router.get("/tecnicos", authMiddleware, usuarioController.listarTecnicos);
 
 module.exports = router;
