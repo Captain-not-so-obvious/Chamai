@@ -7,6 +7,7 @@ const { sequelize } = require("./models"); // Alterado para importar diretamente
 const chamadoRoutes = require("./routes/chamado.routes");
 const usuarioRoutes = require("./routes/usuario.routes")
 const historicoRoutes = require("./routes/historico.routes");
+const relatorioRoutes = require("./routes/relatorio.routes");
 
 // Middlewares
 app.use(cors({
@@ -19,6 +20,7 @@ app.use("/usuarios", require("./routes/usuario.routes"));
 app.use("/auth", require("./routes/auth.routes"));
 app.use("/chamados", chamadoRoutes);
 app.use("/historico", historicoRoutes);
+app.use("/relatorios", relatorioRoutes);
 
 // Conecta e sincroniza o banco
 sequelize.authenticate()

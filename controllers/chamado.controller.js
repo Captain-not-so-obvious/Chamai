@@ -140,68 +140,11 @@ const atribuirTecnico = async (req, res) => {
     }
 };
 
-const listarChamadosResolvidosComHistorico = async (req, res) => {
-  const { tecnicoId, dataInicio, dataFim } = req.query;
-
-  try {
-    const where = {
-      status: 'resolvido',
-    };
-
-    if (tecnicoId) {
-      where.tecnicoId = tecnicoId;
-    }
-
-    if (dataInicio && dataFim) {
-      const dataInicioFiltro = new Date(`${dataInicio}T00:00:00.000-03:00`);
-      const dataFimFiltro = new Date(`${dataFim}T23:59:59.999-03:00`);
-
-      where.dataFechamento = {
-        [Op.between]: [dataInicioFiltro, dataFimFiltro],
-      };
-    }
-
-    const chamados = await Chamado.findAll({
-      where,
-      include: [
-        {
-          model: Usuario,
-          as: "tecnico",
-          attributes: ["id", "nome"],
-        },
-        {
-          model: Usuario,
-          as: "solicitante",
-          attributes: ["id", "nome"],
-        },
-        {
-          model: Historico,
-          as: "historico",
-          include: [
-            {
-              model: Usuario,
-              as: "Usuario",
-              attributes: ["id", "nome"],
-            },
-          ],
-        },
-      ],
-      order: [["dataFechamento", "DESC"]],
-    });
-
-    res.json(chamados);
-  } catch (error) {
-    console.error("Erro ao listar chamados resolvidos:", error);
-    res.status(500).json({ message: "Erro ao listar chamados resolvidos", error });
-  }
-};
-
 module.exports = {
     criarChamado,
     resolverChamado,
     listarChamados,
     listarChamadosPorUsuario,
     listarChamadosPorStatus,
-    listarChamadosResolvidosComHistorico,
     atribuirTecnico,
 };

@@ -37,7 +37,7 @@ export default function RelatorioResolvidos() {
             queryParams.append("dataFim", dataFim);
         }
 
-        fetch(`http://localhost:3000/chamados/resolvidos/historico?${queryParams.toString()}`, {
+        fetch(`http://localhost:3000/relatorios/resolvidos/historico?${queryParams.toString()}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -130,7 +130,6 @@ export default function RelatorioResolvidos() {
             </div>
 
             <div className="botoes-exportar">
-                <button onClick={exportarCSV} className="botao-exportar">Exportar CSV</button>
                 <button onClick={exportarPDF} className="botao-exportar">Exportar PDF</button>
             </div>
 
