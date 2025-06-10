@@ -76,13 +76,21 @@ const login = async (req, res) => {
 
 
 const listarUsuarios = async (req, res) => {
+    const { tipo } = req.query;
+
+    const where = {};
+    if (tipo) {
+        where.tipo = tipo.toLowerCase();
+    }
+
     try {
         const usuarios = await Usuario.findAll({
-            attributes: ["id", "nome", "email", "tipo"] // evita retornar senha
+            where,
+            attributes: ["id", "nome", "email", "tipo"]
         });
         res.json(usuarios);
     } catch (error) {
-        console.error("Erro ao listar usuários", error);
+        console.error("Erro ao listar usuários:", error);
         res.status(500).json({ message: "Erro ao buscar usuários" });
     }
 };
