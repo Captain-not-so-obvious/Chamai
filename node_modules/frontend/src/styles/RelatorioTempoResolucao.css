@@ -11,7 +11,7 @@
 .titulo {
     text-align: center;
     font-size: 24px;
-    color: #2c3e50;
+    color: #e0e1dd;
     margin-bottom: 30px;
 }
 
@@ -33,7 +33,7 @@
 .campo label {
     margin-bottom: 6px;
     font-weight: 600;
-    color: #34495e;
+    color: #e0e1dd;
 }
 
 .campo input,
@@ -90,14 +90,15 @@
     border: 1px solid #e0e1dd;
     padding: 10px;
     text-align: center;
+    color: #e0e1dd;
 }
 
 .tabela-relatorio th {
-    background-color: #e0e1dd;
-    color: #2c3e50;
+    background-color: #2c3e50;
+    color: #e0e1dd;
     font-weight: 600;
 }
 
 .tabela-relatorio tr:nth-child(even) {
-    background-color: #e0e1dd;
+    background-color: #2c3e50;
 }
