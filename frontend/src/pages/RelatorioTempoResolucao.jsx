@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -55,16 +55,21 @@ const RelatorioTempoResolucao = () => {
     }
   };
 
-  const exportarPDF = () => {
-    const doc = new jsPDF();
-    doc.text("Relatório de Tempo Médio de Resolução", 14, 16);
-    doc.autoTable({
-      startY: 20,
-      head: [["Técnico", "Chamados Resolvidos", "Média de Resolução (horas)"]],
-      body: relatorio.map((r) => [r.tecnico, r.chamadosResolvidos, r.mediaResolucaoHoras]),
-    });
-    doc.save("relatorio_tempo_resolucao.pdf");
-  };
+const exportarPDF = () => {
+  const doc = new jsPDF();
+  autoTable(doc, {
+    startY: 20,
+    head: [["Técnico", "Chamados Resolvidos", "Média de Resolução (horas)"]],
+    body: relatorio.map((r) => [
+      r.tecnico,
+      r.chamadosResolvidos,
+      r.mediaResolucaoHoras !== null
+        ? Number(r.mediaResolucaoHoras).toFixed(2)
+        : "-",
+    ]),
+  });
+  doc.save("relatorio_tempo_resolucao.pdf");
+};
 
   const chartData = {
     labels: relatorio.map((r) => r.tecnico),
