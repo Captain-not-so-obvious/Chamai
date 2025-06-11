@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  scales,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 import "../styles/RelatorioTempoResolucao.css";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const RelatorioTempoResolucao = () => {
   const [tecnicos, setTecnicos] = useState([]);
@@ -51,6 +64,45 @@ const RelatorioTempoResolucao = () => {
       body: relatorio.map((r) => [r.tecnico, r.chamadosResolvidos, r.mediaResolucaoHoras]),
     });
     doc.save("relatorio_tempo_resolucao.pdf");
+  };
+
+  const chartData = {
+    labels: relatorio.map((r) => r.tecnico),
+    datasets: [
+      {
+        label: "Média de Resolução (horas)",
+        data: relatorio.map((r) => r.mediaResolucaoHoras),
+        backgroundColor: "#3498db",
+        borderRadius: 6,
+      },
+    ],
+  };
+
+  const ChartOptions = {
+    resposive: true,
+    plugins: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Tempo Médio de Resolução por Técnico",
+        color: "#2c3e50",
+        font: { size: 18 },
+      },
+    },
+    indexAxis: "y",
+    scales: {
+      x: {
+        ticks: { color: "#2c3e50" },
+        title: {
+          display: true,
+          text: "Horas",
+          color: "#2c3e50",
+        },
+      },
+      y: {
+        ticks: { color: "#2c3e50" },
+      },
+    },
   };
 
   return (
@@ -104,6 +156,12 @@ const RelatorioTempoResolucao = () => {
           ))}
         </tbody>
       </table>
+
+      {relatorio.length > 0 && (
+        <div className="grafico">
+          <Bar data={chartData} options={ChartOptions} />  
+        </div>
+      )}
     </div>
   );
 };
