@@ -9,11 +9,12 @@ export default function FormularioChamado() {
     const [descricao, setDescricao] = useState("");
     const [prioridade, setPrioridade] = useState("");
     const [mensagem, setMensagem] = useState("");
+    const [setor, setSetor] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!nome || !email || !titulo || !descricao || !prioridade) {
+        if (!nome || !email || !titulo || !descricao || !prioridade || !setor) {
             setMensagem("Por favor, preencha todos os campos.");
             return;
         }
@@ -30,6 +31,7 @@ export default function FormularioChamado() {
                     titulo,
                     descricao,
                     prioridade,
+                    setor,
                 }),
             });
 
@@ -86,6 +88,32 @@ export default function FormularioChamado() {
                     <option value="baixa">Baixa</option>
                     <option value="media">Média</option>
                     <option value="alta">Alta</option>
+                </select>
+                <select
+                    value={setor}
+                    onChange={(e) => setSetor(e.target.value)}
+                    >
+                    <option value="">Selecione o Setor</option>
+                    <option value="Administrativo">Administrativo</option>
+                    {/* <option value="Elétrica">Elétrica</option> */}
+                    {/* <option value="Hidráulica">Hidráulica</option> */}
+                    <option value="Laboratório">Laboratório</option>
+                    <option value="Logística">Logística</option>
+                    <option value="Manutenção">Manutenção</option>
+                    {/* <option value="Obras">Obras</option>
+                    <option value="Pintura">Pintura</option> */}
+                    <option value="Portaria">Portaria</option>
+                    {/* <option value="Envase 01">Envase 01</option>
+                    <option value="Envase 02">Envase 02</option>
+                    <option value="Envase Selafort">Envase Selafort</option> */}
+                    <option value="Produção">Produção</option>
+                    {/* <option value="Plataforma 01">Plataforma 01</option>
+                    <option value="Plataforma 02">Plataforma 02</option>
+                    <option value="Plataforma Selafort">Plataforma Selafort</option> */}
+                    <option value="Planejamento">Planejamento</option>
+                    <option value="Segurança">Segurança</option>
+                    <option value="Solda">Solda</option>
+                    <option value="Qualidade">Qualidade</option>    
                 </select>
                 <button type="submit">Enviar Chamado</button>
             </form>

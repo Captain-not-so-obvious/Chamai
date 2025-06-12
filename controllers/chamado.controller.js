@@ -3,9 +3,9 @@ const { Usuario, Chamado, Historico } = db;
 const { Op } = require("sequelize");
 
 const criarChamado = async (req, res) => {
-    const { solicitanteNome, solicitanteEmail, titulo, descricao, prioridade } = req.body;
+    const { solicitanteNome, solicitanteEmail, titulo, descricao, prioridade, setor } = req.body;
 
-    if (!solicitanteNome || !solicitanteEmail || !titulo || !descricao || !prioridade) {
+    if (!solicitanteNome || !solicitanteEmail || !titulo || !descricao || !prioridade || !setor) {
         return res.status(400).json({ message: "Todos os campos são obrigatórios." });
     }
 
@@ -24,6 +24,7 @@ const criarChamado = async (req, res) => {
             titulo,
             descricao,
             prioridade,
+            setor,
             usuarioId: usuario.id
         });
 
