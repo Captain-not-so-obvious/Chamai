@@ -87,14 +87,14 @@ const listarChamados = async (req, res) => {
     const { usuarioId, status } = req.query;
 
     try {
-        let chamados;
-        if (usuarioId) {
-            chamados = await Chamado.findAll({ where: { usuarioId } });
-        } else if (status) {
-            chamados = await Chamado.findAll({ where: { status } });
-        } else {
-            chamados = await Chamado.findAll();
-        }
+        let where = {};
+        if (usuarioId) where.usuarioId = usuarioId;
+        if (status) where.status = status;
+
+        const chamados = await Chamado.findAll({
+            where,
+            include: [{ model: Usuario, as: "solicitante" }]
+        });
 
         res.json(chamados);
     } catch (error) {
@@ -105,7 +105,10 @@ const listarChamados = async (req, res) => {
 const listarChamadosPorUsuario = async (req, res) => {
     const { id } = req.params;
     try {
-        const chamados = await Chamado.findAll({ where: { usuarioId: id } });
+        const chamados = await Chamado.findAll({
+            where: { usuarioId: id },
+            include: [{ model: Usuario, as: "solicitante" }]
+        });
         res.json(chamados);
     } catch (error) {
         res.status(500).json({ message: "Erro ao buscar chamados por usuário", error });
@@ -113,13 +116,25 @@ const listarChamadosPorUsuario = async (req, res) => {
 };
 
 const listarChamadosPorStatus = async (req, res) => {
-    const { status } = req.params;
-    try {
-        const chamados = await Chamado.findAll({ where: { status } });
-        res.json(chamados);
-    } catch (error) {
-        res.status(500).json({ message: "Erro ao buscar chamados por status", error });
-    }
+  const { status } = req.params;
+  const { usuarioId, setor } = req.query;
+
+  try {
+    let where = { status };
+
+    if (usuarioId) where.usuarioId = usuarioId;
+    if (setor) where.setor = setor;
+
+    const chamados = await Chamado.findAll({
+      where,
+      include: [{ model: Usuario, as: "solicitante" }],
+      order: [["dataAbertura", "DESC"]], // Ordena por data de abertura decrescente
+    });
+
+    res.json(chamados);
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao buscar chamados por status", error });
+  }
 };
 
 const atribuirTecnico = async (req, res) => {

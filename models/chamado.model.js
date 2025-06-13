@@ -24,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: true,
         },
-               setor: {
+        setor: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         usuarioId: {
             type: DataTypes.INTEGER,

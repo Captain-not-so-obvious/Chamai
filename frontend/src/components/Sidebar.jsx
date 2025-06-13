@@ -11,7 +11,7 @@ export default function Sidebar() {
                     <li className='submenu-title'>📊 Relatórios</li>
                     <li><NavLink to="/relatorios/resolvidos">Chamados Resolvidos</NavLink></li>
                     <li><NavLink to="/relatorios/media-tecnico">Média de chamados por Técnicos</NavLink></li>
-                    <li><NavLink to="/relatorios/abertos-por-usuario">Chamados Abertos por Usuário</NavLink></li>
+                    <li><NavLink to="/relatorios/abertos-por-usuario">Chamados Resolvidos por Usuário ou Setor</NavLink></li>
                     <li><NavLink to="/relatorios/sla">Dashboard de SLA</NavLink></li>
                     <li><NavLink to="/relatorios/exportar">Exportar Relatórios</NavLink></li>
                     <li><NavLink to="/relatorios/filtro-busca">Filtro e Busca</NavLink></li>
