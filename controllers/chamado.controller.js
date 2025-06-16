@@ -1,6 +1,6 @@
 const db = require("../models");
 const { Usuario, Chamado, Historico } = db;
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 
 const criarChamado = async (req, res) => {
     const { solicitanteNome, solicitanteEmail, titulo, descricao, prioridade, setor } = req.body;
@@ -122,7 +122,7 @@ const listarChamadosPorStatus = async (req, res) => {
   try {
     let where = { status };
 
-    if (usuarioId) where.usuarioId = usuarioId;
+    if (usuarioId) where.usuarioId = Number(usuarioId);
     if (setor) where.setor = setor;
 
     const chamados = await Chamado.findAll({
@@ -156,6 +156,21 @@ const atribuirTecnico = async (req, res) => {
     }
 };
 
+const listarSetoresDosChamados = async (req, res) => {
+    try {
+        const setores = await Chamado.findAll({
+            attributes: [[fn("DISTINCT", col("setor")), "setor"]],
+            raw: true,
+        });
+
+        const setoresUnicos = setores.map(s => s.setor);
+        res.json(setoresUnicos);
+    } catch (error) {
+        console.error("Erro ao buscar setores dos chamados:", error);
+        res.status(500).json({ error: "Erro ao buscar setores dos chamados" });
+    }
+};
+
 module.exports = {
     criarChamado,
     resolverChamado,
@@ -163,4 +178,5 @@ module.exports = {
     listarChamadosPorUsuario,
     listarChamadosPorStatus,
     atribuirTecnico,
+    listarSetoresDosChamados
 };

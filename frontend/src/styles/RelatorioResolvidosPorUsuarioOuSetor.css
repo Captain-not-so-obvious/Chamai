@@ -1,0 +1,52 @@
+.relatorio-container {
+    padding: 20px;
+    background-color: #0D1B2A;
+    color: #e0e1dd;
+    font-family: Arial, sans-serif;
+}
+
+.filtros {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.filtros h3 {
+    margin: 0;
+    font-size: 14px;
+    flex-basis: 100%;
+}
+
+.filtros select, .filtros button {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #e0e1dd;
+    border-radius: 6px;
+    background-color: #e0e1dd;
+    min-width: 200px;
+    height: 40px;
+}
+
+.filtros button {
+    cursor: pointer;
+    background-color: #415a77;
+    transition: background-color 0.3s;
+}
+
+.filtros button:hover {
+    background-color: #3a506b;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1b263b;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #e0e1dd;
+    text-align: left;
+}

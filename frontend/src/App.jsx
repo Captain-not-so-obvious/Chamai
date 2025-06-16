@@ -5,6 +5,7 @@ import PainelTecnico from "./pages/PainelTecnico";
 import NovoChamado from "./pages/NovoChamado";
 import RelatorioResolvidos from "./pages/RelatorioChamadosResolvidos";
 import RelatorioTempoResolucao from "./pages/RelatorioTempoResolucao";
+import RelatorioResolvidosPorUsuarioOuSetor from "../src/pages/RelatorioChamadosResolvidosPorUsuarioOuSetor";
 import RotaPrivada from "./components/RotaPrivada";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/painel-tecnico" element={<PainelTecnico />} />
           <Route path="/relatorios/resolvidos" element={<RelatorioResolvidos />} />
           <Route path="/relatorios/media-tecnico" element={<RelatorioTempoResolucao />} />
+          <Route path="/relatorios/abertos-por-usuario" element={<RelatorioResolvidosPorUsuarioOuSetor />} />
           {/* Adicione outras rotas privadas aqui */}
         </Route>
       </Routes>

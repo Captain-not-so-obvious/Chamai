@@ -15,4 +15,7 @@ router.get("/usuario/:id", authMiddleware, chamadoController.listarChamadosPorUs
 router.get("/status/:status", authMiddleware, chamadoController.listarChamadosPorStatus);
 router.put("/:id/atribuir", authMiddleware, chamadoController.atribuirTecnico);
 
+// Rota que lista o setor do chamado
+router.get("/setores", authMiddleware, chamadoController.listarSetoresDosChamados);
+
 module.exports = router;

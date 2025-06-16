@@ -112,7 +112,7 @@ export default function FormularioChamado() {
                     <option value="Plataforma Selafort">Plataforma Selafort</option> */}
                     <option value="Planejamento">Planejamento</option>
                     <option value="Segurança">Segurança</option>
-                    <option value="Solda">Solda</option>
+                    {/* <option value="Solda">Solda</option> */}
                     <option value="Qualidade">Qualidade</option>    
                 </select>
                 <button type="submit">Enviar Chamado</button>
