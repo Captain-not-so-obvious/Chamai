@@ -8,7 +8,7 @@
 8 - Painel técnico aparece só chamados em aberto ( feito )
 9 - Relatório de chamados resolvidos com histórico ( feito )
 10 - Relatório de média de resolução de chamados por técnico com o tempo de resolução ( feito )
-11 - Relatório de chamados abertos por usuário ou setor
+11 - Relatório de chamados abertos por usuário ou setor ( feito )
 12 - Filtro e busca por chamados
 13 - Exportar relatórios (PDF/CSV) ( feito )
 14 - Dashboard de SLA (Service Level Agreement)

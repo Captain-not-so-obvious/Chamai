@@ -13,9 +13,14 @@ router.put("/:id/resolver", authMiddleware, chamadoController.resolverChamado);
 router.get("/", authMiddleware, chamadoController.listarChamados);
 router.get("/usuario/:id", authMiddleware, chamadoController.listarChamadosPorUsuario);
 router.get("/status/:status", authMiddleware, chamadoController.listarChamadosPorStatus);
+
+// atribui técnico ao chamado
 router.put("/:id/atribuir", authMiddleware, chamadoController.atribuirTecnico);
 
 // Rota que lista o setor do chamado
 router.get("/setores", authMiddleware, chamadoController.listarSetoresDosChamados);
+
+// busca chamados por filtros
+router.get("/filtro-busca", authMiddleware, chamadoController.buscarChamadosComFiltros);
 
 module.exports = router;

@@ -171,6 +171,36 @@ const listarSetoresDosChamados = async (req, res) => {
     }
 };
 
+const buscarChamadosComFiltros = async (req, res) => {
+    const { setor, prioridade, status, termo } = req.query;
+
+    let where = {};
+
+    if (setor) where.setor = setor;
+    if (prioridade) where.prioridade = prioridade;
+    if (status) where.status = status;
+
+    if (termo) {
+        where[Op.or] = [
+            { titulo: { [Op.iLike]: `%${termo}%` } },
+            { descricao: { [Op.iLike]: `%${termo}%` } }
+        ];
+    }
+
+    try {
+        const chamados = await Chamado.findAll({
+            where,
+            include: [{ model: Usuario, as: "solicitante" }],
+            order: [["dataAbertura", "DESC"]]
+        });
+
+        res.json(chamados);
+    } catch (error) {
+        console.error("Erro ao buscar chamados com filtro:", error);
+        res.status(500).json({ message: "Erro interno ao buscar chamados" });
+    }
+};
+
 module.exports = {
     criarChamado,
     resolverChamado,
@@ -178,5 +208,6 @@ module.exports = {
     listarChamadosPorUsuario,
     listarChamadosPorStatus,
     atribuirTecnico,
-    listarSetoresDosChamados
+    listarSetoresDosChamados,
+    buscarChamadosComFiltros
 };
