@@ -1,94 +1,100 @@
 .relatorio-container {
-    background-color: #0d1b2a;
+    padding-left: 270px; /* Espaço para a sidebar */
+    padding-right: 20px;
+    padding-top: 20px;
+    box-sizing: border-box;
     min-height: 100vh;
-    padding: 2rem;
+    background-color: #2f5d80
 }
 
 .relatorio-titulo {
-    color: #e0e1dd;
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid #415a77;
-    padding-bottom: 0.5rem;
-}
-
-.chamado-card {
-    background-color: #1b263b;
-    color: #e0e1dd;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-left: 5px solid #415a77;
-    border-radius: 8px;
-}
-
-.chamado-titulo {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    color: #e0e1dd;
-}
-
-.chamado-info,
-.chamado-status {
-    color: #778da9;
-    margin: 0.2rem 0;
-}
-
-.historico-titulo {
-    margin-top: 1rem;
-    font-size: 1rem;
-    color: #415a77;
-}
-
-.historico-lista {
-    margin-top: 0.5rem;
-    padding-left: 1.2rem;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
     color: #e0e1dd;
 }
 
 .filtro-container {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .input-filtro {
-    padding: 0.5rem;
-    width: 250px;
+    padding: 8px 12px;
+    font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
 .botao-filtro {
-    padding: 0.5rem 1rem;
-    background-color: #778da9;
+    padding: 8px 16px;
+    font-size: 1rem;
+    background-color: #415a77;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
 }
 
+.botao-filtro:hover {
+    background-color: #1b263b;
+}
+
 .botoes-exportar {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
+    margin-bottom: 20px;
 }
 
 .botao-exportar {
-  padding: 10px 16px;
-  background-color: #778da9;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    background-color: #3f7cac;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 .botao-exportar:hover {
-  background-color: #415a77;
+    background-color: #2f5d80;
+}
+
+.chamado-card {
+    background-color: #1b263b;
+    color: #e0e1dd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chamado-titulo {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #e0e1dd
+}
+
+.chamado-status {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #e0e1dd
+}
+
+.historico-titulo {
+    margin-top: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #e0e1dd;
+}
+
+.historico-lista {
+    list-style-type: disc;
+    padding-left: 20px;
+    color: #e0e1dd
 }
 
 .mensagem-vazia {
-    text-align: center;
+    color: #888;
     font-style: italic;
     margin-top: 20px;
-    color: #e0e1dd;
 }
