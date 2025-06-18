@@ -50,3 +50,23 @@ th, td {
     border: 1px solid #e0e1dd;
     text-align: left;
 }
+
+.botoes-exportar {
+    margin-bottom: 20px;
+}
+
+.botao-exportar {
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    background-color: #415a77;
+    color: #e0e1dd;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.botao-exportar:hover {
+    background-color: #3a506b;
+    color: #e0e1dd;
+}

@@ -1,3 +1,5 @@
+import jsPDF from "jspdf";
+import autotable, { autoTable } from "jspdf-autotable";
 import { useEffect, useState } from "react";
 import "../styles/RelatorioResolvidosPorUsuarioOuSetor.css";
 
@@ -66,6 +68,30 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
         }
     };
 
+    const exportarPDF = () => {
+        const doc = new jsPDF();
+        doc.text("Relatório de Chamados Resolvidos por Usuário ou Setor", 14, 15);
+
+        const rows = chamados.map((chamado) => [
+            chamado.id,
+            chamado.titulo,
+            chamado.descricao,
+            chamado.setor,
+            chamado.solicitante?.nome || "Desconhecido",
+            new Date(chamado.dataAbertura).toLocaleString(),
+            new Date(chamado.dataFechamento).toLocaleString(),
+        ]);
+
+        autoTable(doc, {
+            startY: 25,
+            head: [["ID", "Titulo", "Descrição", "Setor", "Solicitante", "Abertura", "Fechamento"]],
+            body: rows,
+            styles: { fontSize: 8 },
+        });
+
+        doc.save("relatorio_chamados_resolvidos_por_usuario_ou_setor.pdf");
+    };
+
     useEffect(() => {
         buscarUsuarios();
         buscarSetores();
@@ -98,6 +124,12 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
 
                 <button onClick={buscarChamados}>Filtrar</button>
             </div>
+
+            {filtrado && chamados.length > 0 && (
+                <div className="botoes-exportar">
+                    <button onClick={exportarPDF} className="botao-exportar">Exportar PDF</button>
+                </div>
+            )}
 
             {!filtrado ? (
                 <p className="mensagem-inicial">Selecione os filtros e clique em "Filtrar" para visualizar os chamados resolvidos.</p>
