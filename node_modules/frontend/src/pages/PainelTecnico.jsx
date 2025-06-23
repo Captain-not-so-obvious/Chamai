@@ -66,6 +66,29 @@ export default function PainelTecnico() {
         await carregarChamados(token);
     };
 
+    const alterarPrioridade = async (id, novaPrioridade) => {
+        try {
+            const response = await fetch(`http://localhost:3000/chamados/${id}/prioridade`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ prioridade: novaPrioridade }),
+            });
+
+            if (response.ok) {
+                alert("Prioridade alterada!");
+                // atualiza a lista de chamados
+                buscarChamados();
+            } else {
+                alert("Erro ao atualizar a prioridade!");
+            }
+        } catch (error) {
+            console.error("Erro ao alterar prioridade:", error);
+        }
+    };
+
     return (
         <div className="painel-container">
             <h2>Chamados em Aberto</h2>
@@ -77,6 +100,7 @@ export default function PainelTecnico() {
                     chamado={chamado}
                     onAtribuir={atribuirChamado}
                     onResolver={resolverChamado}
+                    onAlterarPrioridade={alterarPrioridade}
                 />
             ))}
         </div>

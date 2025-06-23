@@ -23,4 +23,7 @@ router.get("/setores", authMiddleware, chamadoController.listarSetoresDosChamado
 // busca chamados por filtros
 router.get("/filtro-busca", authMiddleware, chamadoController.buscarChamadosComFiltros);
 
+// Muda a prioridade do chamado de acordo com as demandas do técnico
+router.put("/:id/prioridade", authMiddleware, chamadoController.alterarPrioridade);
+
 module.exports = router;

@@ -9,9 +9,9 @@
 9 - Relatório de chamados resolvidos com histórico ( feito )
 10 - Relatório de média de resolução de chamados por técnico com o tempo de resolução ( feito )
 11 - Relatório de chamados abertos por usuário ou setor ( feito )
-12 - Filtro e busca por chamados
+12 - Filtro e busca por chamados ( feito )
 13 - Exportar relatórios (PDF/CSV) ( feito )
-14 - Dashboard de SLA (Service Level Agreement)
+14 - Dashboard de SLA (Service Level Agreement) ( não necessário ainda )
 15 - Permitir ao técnico mudar a prioridade dos chamados em aberto de acordo com a necessidade do setor
 17 - Aplicar machine learning para elencar categoria e prioridade de chamado com base na descrição
 18 - Tela para cadastro de técnicos
@@ -19,3 +19,4 @@
 20 - Quando o chamado for atribuído a um técnico trazer essa informação no card do chamado;
 21 - Ordenar os chamados por data de abertura
 22 - Adicionar filtros na tela de chamado: setor, prioridade e status
+23 - Adicionar histórico ao chamado no frontend

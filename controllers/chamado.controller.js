@@ -201,6 +201,36 @@ const buscarChamadosComFiltros = async (req, res) => {
     }
 };
 
+const alterarPrioridade = async (req, res) => {
+    const chamadoId = req.params.id;
+    const { prioridade } = req.body;
+
+    const prioridadesvalidas = ["baixa", "media", "alta"];
+
+    if (!prioridadesValidas.includes(prioridade)) {
+        return res.status(400).json({ mensagem: "Prioridade Inválida" });
+    }
+
+    try {
+        const chamado = await Chamado.findByPk(chamadoId);
+
+        if (!chamado) {
+            return res.status(404).json({ mensagem: "Chamado não encontrado" });
+        }
+
+        if (chamado.status === "resolvido") {
+            return res.status(400).json({ mensagem: "Não é possível alterar a prioridade de um chamado resolvido"});
+        }
+
+        await chamado.update({ prioridade });
+
+        return res.status(200).json({ mensagem: "Prioridade atualizada com sucesso" });
+    } catch (error) {
+        console.error("Erro ao alterar prioridade:", error);
+        return res.status(500).json({ mensagem: "Erro interno do servidor" });
+    }
+};
+
 module.exports = {
     criarChamado,
     resolverChamado,
@@ -209,5 +239,6 @@ module.exports = {
     listarChamadosPorStatus,
     atribuirTecnico,
     listarSetoresDosChamados,
-    buscarChamadosComFiltros
+    buscarChamadosComFiltros,
+    alterarPrioridade
 };

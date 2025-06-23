@@ -14,3 +14,29 @@
     margin-right: 0.5rem;
     padding: 0.5rem 1rem;
 }
+
+.alterar-prioridade {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.alterar-prioridade select,
+.alterar-prioridade button {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #e0e1dd;
+    background-color: #415a77;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.alterar-prioridade button:hover {
+    background-color: #3a506b;
+}
+
+.alterar-prioridade select {
+    background-color: #1b263b;
+    color: #e0e1dd;
+}
