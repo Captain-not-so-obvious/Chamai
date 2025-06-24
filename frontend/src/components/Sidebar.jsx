@@ -15,6 +15,8 @@ export default function Sidebar() {
                     {/* <li><NavLink to="/relatorios/sla">Dashboard de SLA</NavLink></li> */}
                     {/* <li><NavLink to="/relatorios/exportar">Exportar Relatórios</NavLink></li> */}
                     <li><NavLink to="/relatorios/filtro-busca">Filtro e Busca</NavLink></li>
+                    <li className='submenu-title'>👤 Cadastros</li>
+                    <li><NavLink to="/cadastro-tecnico">Cadastro de Técnicos</NavLink></li>
                     {/* <li className='submenu-title'>🤖 Inteligência Artificial</li> */}
                     {/* <li><NavLink to="/ia/classificacao">Classificação Automática</NavLink></li> */}
                     <li><NavLink to="/">🏠 Home</NavLink></li>

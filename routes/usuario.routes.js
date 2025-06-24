@@ -9,6 +9,9 @@ router.post("/registro", usuarioController.criarUsuario);
 // Rota para login
 router.post("/login", usuarioController.login);
 
+//Rota para cadastro de técnicos
+router.post("/tecnicos", authMiddleware, usuarioController.criarTecnico)
+
 router.get("/", authMiddleware, usuarioController.listarUsuarios);
 router.get("/tecnicos", authMiddleware, usuarioController.listarTecnicos);
 

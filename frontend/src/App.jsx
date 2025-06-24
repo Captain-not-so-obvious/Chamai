@@ -7,6 +7,7 @@ import RelatorioResolvidos from "./pages/RelatorioChamadosResolvidos";
 import RelatorioTempoResolucao from "./pages/RelatorioTempoResolucao";
 import RelatorioResolvidosPorUsuarioOuSetor from "../src/pages/RelatorioChamadosResolvidosPorUsuarioOuSetor";
 import FiltroBuscaChamados from "./pages/FiltroBuscaChamados";
+import CadastroTecnico from "./pages/CadastroTecnico";
 import RotaPrivada from "./components/RotaPrivada";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/relatorios/media-tecnico" element={<RelatorioTempoResolucao />} />
           <Route path="/relatorios/abertos-por-usuario" element={<RelatorioResolvidosPorUsuarioOuSetor />} />
           <Route path="/relatorios/filtro-busca" element={<FiltroBuscaChamados />} />
+          <Route path="/cadastro-tecnico" element={<CadastroTecnico />} />
           {/* Adicione outras rotas privadas aqui */}
         </Route>
       </Routes>

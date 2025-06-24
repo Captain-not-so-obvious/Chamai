@@ -108,9 +108,32 @@ const listarTecnicos = async (req, res) => {
     }
 };
 
+const criarTecnico = async (req, res) => {
+    const { nome, email, senha } = req.body;
+
+    if (!nome || !email || !senha) {
+        return res.status(400).json({ mensagem: "Nome, email e senha são obrigatórios" });
+    }
+
+    try {
+        const tecnico = await Usuario.create({
+            nome,
+            email,
+            senha,
+            tipo: "tecnico"
+        });
+
+        return res.status(201).json({ mensagem: "Técnico cadastrado com sucesso", tecnico });
+    } catch (error) {
+        console.error("Erro ao criar técnico:", error);
+        return res.status(500).json({ mensagem: "Erro interno do servidor" });
+    }
+};
+
 module.exports = {
     criarUsuario,
     login,
     listarUsuarios,
     listarTecnicos,
+    criarTecnico
 };

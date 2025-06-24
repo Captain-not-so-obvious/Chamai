@@ -1,0 +1,43 @@
+.cadastro-tecnico-container {
+    background-color: #0D1B2A;
+    color: #e0e1dd;
+    padding: 20px;
+    max-width: 400px;
+    margin: 30px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cadastro-tecnico-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.cadastro-tecnico-container form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #778DA9;
+    border-radius: 6px;
+}
+
+.cadastro-tecnico-container form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #415A77;
+    color: #e0e1dd;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cadastro-tecnico-container form button:hover {
+    background-color: #3A506B;
+}
+
+.mensagem {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+}
