@@ -205,7 +205,7 @@ const alterarPrioridade = async (req, res) => {
     const chamadoId = req.params.id;
     const { prioridade } = req.body;
 
-    const prioridadesvalidas = ["baixa", "media", "alta"];
+    const prioridadesValidas = ["baixa", "media", "alta", "critica"];
 
     if (!prioridadesValidas.includes(prioridade)) {
         return res.status(400).json({ mensagem: "Prioridade Inválida" });

@@ -67,6 +67,8 @@ export default function PainelTecnico() {
     };
 
     const alterarPrioridade = async (id, novaPrioridade) => {
+        const token = localStorage.getItem("token");
+
         try {
             const response = await fetch(`http://localhost:3000/chamados/${id}/prioridade`, {
                 method: "PUT",
@@ -80,7 +82,7 @@ export default function PainelTecnico() {
             if (response.ok) {
                 alert("Prioridade alterada!");
                 // atualiza a lista de chamados
-                buscarChamados();
+                await carregarChamados(token);
             } else {
                 alert("Erro ao atualizar a prioridade!");
             }

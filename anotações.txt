@@ -12,7 +12,7 @@
 12 - Filtro e busca por chamados ( feito )
 13 - Exportar relatórios (PDF/CSV) ( feito )
 14 - Dashboard de SLA (Service Level Agreement) ( não necessário ainda )
-15 - Permitir ao técnico mudar a prioridade dos chamados em aberto de acordo com a necessidade do setor
+15 - Permitir ao técnico mudar a prioridade dos chamados em aberto de acordo com a necessidade do setor ( feito )
 17 - Aplicar machine learning para elencar categoria e prioridade de chamado com base na descrição
 18 - Tela para cadastro de técnicos
 19 - Tela para cadastro de chamados por parte do técnico

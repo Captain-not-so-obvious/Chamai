@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         prioridade: {
-            type: DataTypes.ENUM("baixa", "media", "alta"),
+            type: DataTypes.ENUM("baixa", "media", "alta", "critica"),
             allowNull: false,
         },
         status: {
