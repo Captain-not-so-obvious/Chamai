@@ -20,3 +20,5 @@
 21 - Ordenar os chamados por data de abertura
 22 - Adicionar filtros na tela de chamado: setor, prioridade e status
 23 - Adicionar histórico ao chamado no frontend
+24 - Colocar data abertura na tela de Chamados Resolvidos
+25 - Reabrir exportar CSV

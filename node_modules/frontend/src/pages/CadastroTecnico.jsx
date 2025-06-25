@@ -5,11 +5,17 @@ export default function CadastroTecnico() {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const [confirmarSenha, setConfirmarSenha] = useState("");
     const [mensagem, setMensagem] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
+
+        if (senha !== confirmarSenha) {
+            setMensagem("As senhas não são iguais. Por favor, verifique.");
+            return;
+        }
 
         try {
             const response = await fetch("http://localhost:3000/usuarios/tecnicos", {
@@ -26,6 +32,7 @@ export default function CadastroTecnico() {
                 setNome("");
                 setEmail("");
                 setSenha("");
+                setConfirmarSenha("");
             } else {
                 const data = await response.json();
                 setMensagem(data.mensagem || "Erro ao cadastrar técnico.");
@@ -59,6 +66,13 @@ export default function CadastroTecnico() {
                     placeholder="Senha"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Confirmar Senha"
+                    value={confirmarSenha}
+                    onChange={(e) => setConfirmarSenha(e.target.value)}
                     required
                 />
                 <button type="submit">Cadastrar Técnico</button>
