@@ -116,10 +116,17 @@ const criarTecnico = async (req, res) => {
     }
 
     try {
+        const tecnicoExistente = await Usuario.findOne({ where: { email } });
+        if (tecnicoExistente) {
+            return res.status(400).json({ mensagem: "E-mail já cadastrado" });
+        }
+
+        const senhaHash = await bcrypt.hash(senha, 10);
+
         const tecnico = await Usuario.create({
             nome,
             email,
-            senha,
+            senha: senhaHash,
             tipo: "tecnico"
         });
 

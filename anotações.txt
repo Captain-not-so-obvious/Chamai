@@ -14,7 +14,7 @@
 14 - Dashboard de SLA (Service Level Agreement) ( não necessário ainda )
 15 - Permitir ao técnico mudar a prioridade dos chamados em aberto de acordo com a necessidade do setor ( feito )
 17 - Aplicar machine learning para elencar categoria e prioridade de chamado com base na descrição ( fazer depois )
-18 - Tela para cadastro de técnicos
+18 - Tela para cadastro de técnicos ( feito )
 19 - Tela para cadastro de chamados por parte do técnico
 20 - Quando o chamado for atribuído a um técnico trazer essa informação no card do chamado;
 21 - Ordenar os chamados por data de abertura

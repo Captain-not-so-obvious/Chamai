@@ -17,6 +17,7 @@ const criarChamado = async (req, res) => {
                 nome: solicitanteNome,
                 email: solicitanteEmail,
                 tipo: "usuario",
+                setor,
             });
         }
 
@@ -93,7 +94,13 @@ const listarChamados = async (req, res) => {
 
         const chamados = await Chamado.findAll({
             where,
-            include: [{ model: Usuario, as: "solicitante" }]
+            include: [
+                {
+                    model: Usuario,
+                    as: "solicitante",
+                    attributes: ["nome", "setor"]
+                }
+            ]
         });
 
         res.json(chamados);
@@ -107,7 +114,13 @@ const listarChamadosPorUsuario = async (req, res) => {
     try {
         const chamados = await Chamado.findAll({
             where: { usuarioId: id },
-            include: [{ model: Usuario, as: "solicitante" }]
+            include: [
+                {
+                    model: Usuario,
+                    as: "solicitante",
+                    attributes: ["nome", "setor"]
+                }
+            ]
         });
         res.json(chamados);
     } catch (error) {
@@ -127,7 +140,13 @@ const listarChamadosPorStatus = async (req, res) => {
 
     const chamados = await Chamado.findAll({
       where,
-      include: [{ model: Usuario, as: "solicitante" }],
+      include: [
+        {
+            model: Usuario,
+            as: "solicitante",
+            attributes: ["nome", "setor"]
+        }
+      ],
       order: [["dataAbertura", "DESC"]], // Ordena por data de abertura decrescente
     });
 
