@@ -1,52 +1,38 @@
+
 # Chamaí
 
-**Chamaí** é uma plataforma para gerenciamento de chamados, desenvolvida para facilitar a comunicação entre usuários e técnicos, registrando e acompanhando o progresso dos chamados.
+**Chamaí** é uma plataforma completa para gerenciamento de chamados, desenvolvida para facilitar a comunicação entre usuários e técnicos, registrando e acompanhando o progresso dos chamados em tempo real.
 
-## Funcionalidades
+## ✅ Funcionalidades
 
-* **Criação de Chamados**: Usuários podem criar chamados com título, descrição e prioridade.
-* **Atribuição de Técnicos**: Chamados podem ser atribuídos a técnicos para resolução.
-* **Histórico de Chamados**: Cada alteração no status dos chamados é registrada no histórico.
-* **Resolução de Chamados**: Técnicos podem resolver chamados, enviando notificações por e-mail para os solicitantes.
+- **Criação de Chamados**: Usuários podem abrir chamados com título, descrição, prioridade e setor.
+- **Cadastro de Técnicos**: Administradores podem cadastrar técnicos com login e senha próprios.
+- **Atribuição de Técnicos**: Técnicos podem se atribuir aos chamados.
+- **Alteração de Prioridade**: Técnicos podem alterar a prioridade dos chamados em aberto.
+- **Resolução de Chamados**: Técnicos podem resolver chamados, e o sistema envia um e-mail automático ao solicitante.
+- **Histórico de Ações**: Cada ação importante em um chamado é registrada e pode ser consultada.
+- **Autenticação e Autorização**: Login com JWT e permissões diferentes para usuários, técnicos e administradores.
+- **Painel Técnico**: Técnicos visualizam apenas os chamados em aberto e podem gerenciá-los.
+- **Filtros e Busca**: Chamados podem ser filtrados por status, setor, prioridade e termo de busca.
+- **Listagem de Setores**: O sistema identifica setores únicos automaticamente.
 
-## Tecnologias Usadas
+## 🛠 Tecnologias Utilizadas
 
-* **Backend**: Node.js com Express.js
-* **Banco de Dados**: PostgreSQL
-* **ORM**: Sequelize
-* **Autenticação**: JWT (JSON Web Token)
-* **Notificações**: Nodemailer (para envio de e-mails)
-* **Controle de Versionamento**: Git, GitHub
+- **Backend**: Node.js com Express.js
+- **Frontend**: React.js
+- **Banco de Dados**: PostgreSQL
+- **ORM**: Sequelize
+- **Autenticação**: JWT (JSON Web Token) com envio de e-mails via API da Brevo
+- **Notificações**: Nodemailer
+- **Versionamento**: Git, GitHub
 
-## Estrutura do Projeto
+## ⚙️ Configuração
 
-```plaintext
-Chamaí/
-├── config/
-│   └── db.js            # Configuração do banco de dados
-├── controllers/
-│   └── chamado.controller.js  # Lógica para criação e resolução de chamados
-├── models/
-│   └── chamado.model.js  # Modelo de dados do Chamado
-│   └── historico.model.js # Modelo de dados do Histórico
-│   └── usuario.model.js  # Modelo de dados do Usuário
-├── routes/
-│   └── chamado.routes.js  # Rotas para interação com os chamados
-├── services/
-│   └── email.service.js   # Funções para envio de e-mails
-├── app.js                 # Arquivo principal para configuração do servidor
-├── .env                   # Arquivo de variáveis de ambiente
-├── package.json           # Dependências e scripts
-└── README.md              # Este arquivo
-```
-
-## Configuração
-
-1. Clone o repositório para sua máquina local:
+1. Clone o repositório:
 
    ```bash
    git clone https://github.com/Captain-not-so-obvious/Chamai.git
-   cd Chamaí
+   cd Chamai
    ```
 
 2. Instale as dependências:
@@ -55,11 +41,11 @@ Chamaí/
    npm install
    ```
 
-3. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis de ambiente:
+3. Configure o arquivo `.env`:
 
    ```env
    DB_HOST=localhost
-   DB_NAME=zapti
+   DB_NAME=chamai
    DB_USER=postgres
    DB_PASS=yourpassword
    DB_PORT=5432
@@ -68,50 +54,47 @@ Chamaí/
    SMTP_PASS=your_smtp_password
    ```
 
-   Substitua as variáveis de acordo com sua configuração de banco de dados e credenciais de e-mail.
+## 🚀 Executando o Projeto
 
-## Rodando o Projeto
+```bash
+npm start
+```
 
-1. **Inicie o servidor**:
+- O servidor será iniciado em: `http://localhost:3000`
 
-   ```bash
-   npm start
-   ```
+## 🧪 Testes com Postman
 
-   O servidor estará rodando em `http://localhost:3000`.
-
-2. **Sincronização com o banco de dados**:
-
-   A sincronização com o banco de dados será feita automaticamente ao iniciar o servidor. Caso precise forçar a sincronização de modelos, use:
-
-   ```bash
-   npm run sync
-   ```
-
-## Testes
-
-Você pode usar o **Postman** para testar as APIs da plataforma:
-
-1. **POST** `/chamados`: Cria um novo chamado.
-2. **PATCH** `/chamados/:id/resolver`: Resolve um chamado e envia um e-mail de notificação ao solicitante.
-
-Exemplo de payload para criar um chamado:
+### Criar chamado
+```http
+POST /chamados
+```
 
 ```json
 {
-    "solicitanteNome": "João Silva",
-    "solicitanteEmail": "joao.silva@example.com",
-    "titulo": "Problema com login",
-    "descricao": "Não consigo acessar minha conta.",
-    "prioridade": "alta"
+  "solicitanteNome": "João Silva",
+  "solicitanteEmail": "joao.silva@example.com",
+  "titulo": "Problema com login",
+  "descricao": "Não consigo acessar minha conta.",
+  "prioridade": "alta",
+  "setor": "Financeiro"
 }
 ```
 
-## Contribuindo
+### Login
+```http
+POST /usuarios/login
+```
 
-Sinta-se à vontade para abrir issues ou pull requests com melhorias, correções ou novas funcionalidades.
+### Cadastrar técnico (via admin)
+```http
+POST /usuarios/tecnicos
+Authorization: Bearer {token do admin}
+```
 
-## Licença
+## 🤝 Contribuindo
 
-Este projeto é de uso **livre**. Você pode modificar e distribuir o código de acordo com suas necessidades.
+Sinta-se à vontade para abrir **issues** ou enviar **pull requests** com correções, melhorias ou novas funcionalidades.
 
+## 📄 Licença
+
+Este projeto é de uso **livre e aberto**. Você pode modificá-lo e distribuí-lo conforme necessário.

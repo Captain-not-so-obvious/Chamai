@@ -99,6 +99,11 @@ const listarChamados = async (req, res) => {
                     model: Usuario,
                     as: "solicitante",
                     attributes: ["nome", "setor"]
+                },
+                {
+                    model: Usuario,
+                    as: "tecnico",
+                    attributes: ["nome"]
                 }
             ]
         });
@@ -119,6 +124,11 @@ const listarChamadosPorUsuario = async (req, res) => {
                     model: Usuario,
                     as: "solicitante",
                     attributes: ["nome", "setor"]
+                },
+                {
+                    model: Usuario,
+                    as: "tecnico",
+                    attributes: ["nome"]
                 }
             ]
         });
@@ -145,6 +155,11 @@ const listarChamadosPorStatus = async (req, res) => {
             model: Usuario,
             as: "solicitante",
             attributes: ["nome", "setor"]
+        },
+        {
+            model: Usuario,
+            as: "tecnico",
+            attributes: ["nome"]
         }
       ],
       order: [["dataAbertura", "DESC"]], // Ordena por data de abertura decrescente
@@ -209,7 +224,9 @@ const buscarChamadosComFiltros = async (req, res) => {
     try {
         const chamados = await Chamado.findAll({
             where,
-            include: [{ model: Usuario, as: "solicitante" }],
+            include: [{ model: Usuario, as: "solicitante" }
+            , { model: Usuario, as: "tecnico" }
+            ],
             order: [["dataAbertura", "DESC"]]
         });
 

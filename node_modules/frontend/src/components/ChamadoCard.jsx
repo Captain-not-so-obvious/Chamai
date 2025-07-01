@@ -17,6 +17,9 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
             <p><strong>Descrição:</strong> {chamado.descricao}</p>
             <p><strong>Solicitante:</strong> {chamado.solicitante?.nome}</p>
             <p><strong>Setor:</strong> {chamado.solicitante?.setor}</p>
+            {chamado.tecnico && (
+                <p><strong>Técnico Responsável:</strong>{chamado.tecnico.nome}</p>
+            )}
             <p><strong>Prioridade:</strong> {chamado.prioridade}</p>
             <p><strong>Status:</strong> {chamado.status}</p>
             <p><strong>Aberto em:</strong> {new Date(chamado.dataAbertura).toLocaleString()}</p>
