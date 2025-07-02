@@ -1,6 +1,21 @@
 const db = require("../models");
 const { Usuario, Chamado, Historico } = db;
 const { Op, fn, col } = require("sequelize");
+const { enviarEmailChamadoResolvido } = require("../services/email.service");
+
+// Reuso dos includes padrão
+const chamadoIncludes = [
+    {
+        model: Usuario,
+        as: "solicitante",
+        attributes: ["nome", "setor"]
+    },
+    {
+        model: Usuario,
+        as: "tecnico",
+        attributes: ["nome"]
+    }
+];
 
 const criarChamado = async (req, res) => {
     const { solicitanteNome, solicitanteEmail, titulo, descricao, prioridade, setor } = req.body;
@@ -42,21 +57,18 @@ const criarChamado = async (req, res) => {
     }
 };
 
-const { enviarEmailChamadoResolvido } = require("../services/email.service");
-
 const resolverChamado = async (req, res) => {
     const chamadoId = req.params.id;
 
     try {
         const chamado = await Chamado.findByPk(chamadoId, {
-            include: [{ model: Usuario, as: "solicitante" }],
+            include: [{ model: Usuario, as: "solicitante" }]
         });
 
         if (!chamado) {
             return res.status(404).json({ message: "Chamado não encontrado" });
         }
 
-        // Atribui automaticamente o técnico que está resolvendo, se ainda não houver técnico atribuído
         if (!chamado.tecnicoId) {
             chamado.tecnicoId = req.usuario.id;
         }
@@ -94,18 +106,8 @@ const listarChamados = async (req, res) => {
 
         const chamados = await Chamado.findAll({
             where,
-            include: [
-                {
-                    model: Usuario,
-                    as: "solicitante",
-                    attributes: ["nome", "setor"]
-                },
-                {
-                    model: Usuario,
-                    as: "tecnico",
-                    attributes: ["nome"]
-                }
-            ]
+            include: chamadoIncludes,
+            order: [["dataAbertura", "DESC"]]
         });
 
         res.json(chamados);
@@ -119,18 +121,8 @@ const listarChamadosPorUsuario = async (req, res) => {
     try {
         const chamados = await Chamado.findAll({
             where: { usuarioId: id },
-            include: [
-                {
-                    model: Usuario,
-                    as: "solicitante",
-                    attributes: ["nome", "setor"]
-                },
-                {
-                    model: Usuario,
-                    as: "tecnico",
-                    attributes: ["nome"]
-                }
-            ]
+            include: chamadoIncludes,
+            order: [["dataAbertura", "DESC"]]
         });
         res.json(chamados);
     } catch (error) {
@@ -139,36 +131,25 @@ const listarChamadosPorUsuario = async (req, res) => {
 };
 
 const listarChamadosPorStatus = async (req, res) => {
-  const { status } = req.params;
-  const { usuarioId, setor } = req.query;
+    const { status } = req.params;
+    const { usuarioId, setor } = req.query;
 
-  try {
-    let where = { status };
+    try {
+        let where = { status };
 
-    if (usuarioId) where.usuarioId = Number(usuarioId);
-    if (setor) where.setor = setor;
+        if (usuarioId) where.usuarioId = Number(usuarioId);
+        if (setor) where.setor = setor;
 
-    const chamados = await Chamado.findAll({
-      where,
-      include: [
-        {
-            model: Usuario,
-            as: "solicitante",
-            attributes: ["nome", "setor"]
-        },
-        {
-            model: Usuario,
-            as: "tecnico",
-            attributes: ["nome"]
-        }
-      ],
-      order: [["dataAbertura", "DESC"]], // Ordena por data de abertura decrescente
-    });
+        const chamados = await Chamado.findAll({
+            where,
+            include: chamadoIncludes,
+            order: [["dataAbertura", "DESC"]]
+        });
 
-    res.json(chamados);
-  } catch (error) {
-    res.status(500).json({ message: "Erro ao buscar chamados por status", error });
-  }
+        res.json(chamados);
+    } catch (error) {
+        res.status(500).json({ message: "Erro ao buscar chamados por status", error });
+    }
 };
 
 const atribuirTecnico = async (req, res) => {
@@ -224,9 +205,7 @@ const buscarChamadosComFiltros = async (req, res) => {
     try {
         const chamados = await Chamado.findAll({
             where,
-            include: [{ model: Usuario, as: "solicitante" }
-            , { model: Usuario, as: "tecnico" }
-            ],
+            include: chamadoIncludes,
             order: [["dataAbertura", "DESC"]]
         });
 
@@ -255,7 +234,7 @@ const alterarPrioridade = async (req, res) => {
         }
 
         if (chamado.status === "resolvido") {
-            return res.status(400).json({ mensagem: "Não é possível alterar a prioridade de um chamado resolvido"});
+            return res.status(400).json({ mensagem: "Não é possível alterar a prioridade de um chamado resolvido" });
         }
 
         await chamado.update({ prioridade });

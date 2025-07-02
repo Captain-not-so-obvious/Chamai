@@ -16,8 +16,8 @@
 17 - Aplicar machine learning para elencar categoria e prioridade de chamado com base na descrição ( fazer depois )
 18 - Tela para cadastro de técnicos ( feito )
 19 - Tela para cadastro de chamados por parte do técnico ( o técnico pode abrir um chamado direto da tela inicial )
-20 - Quando o chamado for atribuído a um técnico trazer essa informação no card do chamado;
-21 - Ordenar os chamados por data de abertura
+20 - Quando o chamado for atribuído a um técnico trazer essa informação no card do chamado; ( feito )
+21 - Ordenar os chamados por data de abertura ( feito )
 22 - Adicionar filtros na tela de chamado: setor, prioridade e status
 23 - Adicionar histórico ao chamado no frontend
 24 - Colocar data abertura na tela de Chamados Resolvidos
