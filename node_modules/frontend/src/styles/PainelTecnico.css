@@ -27,3 +27,9 @@
   opacity: 0;
   margin-bottom: 1rem;
 }
+
+.filtros-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}

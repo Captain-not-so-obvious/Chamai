@@ -7,6 +7,10 @@ export default function PainelTecnico() {
     const [chamados, setChamados] = useState([]);
     const [tecnicoId, setTecnicoId] = useState(null);
     const [mensagem, setMensagem] = useState("");
+    const [setorFiltro, setSetorFiltro] = useState('');
+    const [prioridadeFiltro, setPrioridadeFiltro] = useState('');
+    const [statusFiltro, setStatusFiltro] = useState('');
+    const [loading, setloading] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -25,18 +29,46 @@ export default function PainelTecnico() {
         }
     }, []);
 
-    const [loading, setloading] = useState(false);
+    const carregarChamados = async (tokenParam) => {
+    setloading(true);
+    const token = tokenParam || localStorage.getItem("token");
 
-    const carregarChamados = async (token) => {
+    try {
+        const response = await fetch("http://localhost:3000/chamados/status/aberto", {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = await response.json();
+        setChamados(data);
+    } catch (error) {
+        console.error("Erro ao carregar chamados:", error);
+        setMensagem("Erro ao carregar chamados.");
+    } finally {
+        setloading(false);
+    }
+};
+
+    const buscarChamadosComFiltros = async (tokenParam) => {
         setloading(true);
+        const token = tokenParam || localStorage.getItem("token");
+
         try {
-            const response = await fetch("http://localhost:3000/chamados/status/aberto", {
+            const params = new URLSearchParams();
+
+            if (setorFiltro) params.append("setor", setorFiltro);
+            if (prioridadeFiltro) params.append("prioridade", prioridadeFiltro);
+            if (statusFiltro) params.append("status", statusFiltro);
+            else params.append("status", "aberto");
+
+            const response = await fetch(`http://localhost:3000/chamados/filtro-busca?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+
             const data = await response.json();
             setChamados(data);
         } catch (error) {
-            setMensagem("Erro ao carregar chamados.");
+            console.error("Erro ao buscar chamados com filtros:", error);
+            setMensagem("Erro ao buscar chamados com filtros.");
         } finally {
             setloading(false);
         }
@@ -81,7 +113,6 @@ export default function PainelTecnico() {
 
             if (response.ok) {
                 alert("Prioridade alterada!");
-                // atualiza a lista de chamados
                 await carregarChamados(token);
             } else {
                 alert("Erro ao atualizar a prioridade!");
@@ -94,6 +125,45 @@ export default function PainelTecnico() {
     return (
         <div className="painel-container">
             <h2>Chamados em Aberto</h2>
+            <div className="filtros-container">
+                <select value={setorFiltro} onChange={(e) => setSetorFiltro(e.target.value)}>
+                    <option value="">Todos os Setores</option>
+                    <option value="Administrativo">Administrativo</option>
+                    {/* <option value="Elétrica">Elétrica</option> */}
+                    {/* <option value="Hidráulica">Hidráulica</option> */}
+                    <option value="Laboratório">Laboratório</option>
+                    <option value="Logística">Logística</option>
+                    <option value="Manutenção">Manutenção</option>
+                    {/* <option value="Obras">Obras</option>
+                    <option value="Pintura">Pintura</option> */}
+                    <option value="Portaria">Portaria</option>
+                    {/* <option value="Envase 01">Envase 01</option>
+                    <option value="Envase 02">Envase 02</option>
+                    <option value="Envase Selafort">Envase Selafort</option> */}
+                    <option value="Produção">Produção</option>
+                    {/* <option value="Plataforma 01">Plataforma 01</option>
+                    <option value="Plataforma 02">Plataforma 02</option>
+                    <option value="Plataforma Selafort">Plataforma Selafort</option> */}
+                    <option value="Planejamento">Planejamento</option>
+                    <option value="Segurança">Segurança</option>
+                    {/* <option value="Solda">Solda</option> */}
+                    <option value="Qualidade">Qualidade</option>
+                </select>
+                <select value={prioridadeFiltro} onChange={(e) => setPrioridadeFiltro(e.target.value)}>
+                    <option value="">Todas as Prioridades</option>
+                    <option value="baixa">Baixa</option>
+                    <option value="media">Média</option>
+                    <option value="alta">Alta</option>
+                    <option value="critica">Crítica</option>
+                </select>
+                <select value={statusFiltro} onChange={(e) => setStatusFiltro(e.target.value)}>
+                    <option value="">Todos os Status</option>
+                    <option value="aberto">Aberto</option>
+                    <option value="em_atendimento">Em Andamento</option>
+                    <option value="resolvido">Resolvido</option>
+                </select>
+                <button onClick={() => buscarChamadosComFiltros()}>Filtrar</button>
+            </div>
             {mensagem && <p>{mensagem}</p>}
             {loading && <p>Carregando chamados...</p>}
             {chamados.map((chamado) => (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import "../styles/ChamadoCard.css";
 import "../styles/PainelTecnico.css";
 
