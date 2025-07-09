@@ -1,9 +1,11 @@
-import { use, useState } from "react";
+import { useState } from "react";
+import HistoricoChamado from "./HistoricoChamado";
 import "../styles/ChamadoCard.css";
 import "../styles/PainelTecnico.css";
 
 export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterarPrioridade }) {
     const [novaPrioridade, setNovaPrioridade] = useState(chamado.prioridade);
+    const [mostrarHistorico, setMostrarHistorico] = useState(false);
 
     const handleAlterarPrioridade = () => {
         if (novaPrioridade !== chamado.prioridade) {
@@ -18,7 +20,7 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
             <p><strong>Solicitante:</strong> {chamado.solicitante?.nome}</p>
             <p><strong>Setor:</strong> {chamado.solicitante?.setor}</p>
             {chamado.tecnico && (
-                <p><strong>Técnico Responsável:</strong>{chamado.tecnico.nome}</p>
+                <p><strong>Técnico Responsável:</strong> {chamado.tecnico.nome}</p>
             )}
             <p><strong>Prioridade:</strong> {chamado.prioridade}</p>
             <p><strong>Status:</strong> {chamado.status}</p>
@@ -34,7 +36,6 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
                         <>
                             <button onClick={() => onResolver(chamado.id)}>Resolver</button>
 
-                            {/* Se quiser, pode fazer só o técnico atribuído poder alterar */}
                             <div className="alterar-prioridade">
                                 <select
                                     value={novaPrioridade}
@@ -51,6 +52,19 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
                     )}
                 </div>
             )}
+
+            {/* ✅ Botão para mostrar/ocultar histórico */}
+            <div className="historico-toggle">
+                <button
+                    onClick={() => setMostrarHistorico(!mostrarHistorico)}
+                    className="botao-ver-historico"
+                >
+                {mostrarHistorico ? "Fechar Histórico" : "Ver Histórico"}
+                </button>
+            </div>
+
+            {/* ✅ Componente visível somente quando solicitado */}
+            {mostrarHistorico && <HistoricoChamado chamadoId={chamado.id} />}
         </div>
     );
 }

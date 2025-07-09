@@ -1,0 +1,53 @@
+.historico-container {
+    margin-top: 1rem;
+    background-color: #415a77;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.historico-container h5 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: #e0e1dd;
+}
+
+.historico-container ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1rem;
+}
+
+.historico-container li {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background-color: #1b263b;
+    border-radius: 6px;
+    border: 1px solid #1b263b;
+}
+
+.historico-container textarea {
+    width: 100%;
+    height: 60px;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    resize: vertical;
+    border: 1px solid #e0e1dd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.historico-container button {
+    margin-top: 0.5rem;
+    padding: 0.4rem 1rem;
+    background-color: #3a506b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.historico-container button:hover {
+    background-color: #1b263b;
+}
