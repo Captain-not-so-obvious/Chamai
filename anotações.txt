@@ -19,6 +19,7 @@
 20 - Quando o chamado for atribuído a um técnico trazer essa informação no card do chamado; ( feito )
 21 - Ordenar os chamados por data de abertura ( feito )
 22 - Adicionar filtros na tela de chamado: setor, prioridade e status ( feito )
-23 - Adicionar histórico ao chamado no frontend
-24 - Colocar data abertura na tela de Chamados Resolvidos
+23 - Adicionar histórico ao chamado no frontend ( feito )
+24 - Colocar data abertura na tela de Chamados Resolvidos ( feito )
 25 - Reabrir exportar CSV
+26 - Programar como recuperar senha a partir da tela de login

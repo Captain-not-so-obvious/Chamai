@@ -1,3 +1,5 @@
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import Papa from "papaparse";
@@ -54,23 +56,27 @@ export default function RelatorioResolvidos() {
         buscarTecnicos();
     }, []);
 
-    const exportarCSV = () => {
+    const exportarExcel = () => {
         const dados = chamados.map((chamado) => ({
             Título: chamado.titulo,
             Status: chamado.status,
-            Técnico: chamado.tecnico?.nome || "Não atribuído",
+            Técnico: chamado.tecnico?.nome || "Não Atribuído",
             Solicitante: chamado.solicitante?.nome || "Desconhecido",
             Fechamento: chamado.dataFechamento
                 ? new Date(chamado.dataFechamento).toLocaleString()
                 : "",
+            Histórico: chamado.historico
+                .map((h) => `${h.descricao} (${new Date(h.dataEvento).toLocaleString()}) - ${h.Usuario?.nome || "Desconhecido"}`)
+                .join(" | "),
         }));
 
-        const csv = Papa.unparse(dados);
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "relatorio_chamados_resolvidos.csv";
-        link.click();
+        const worksheet = XLSX.utils.json_to_sheet(dados);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Chamados Resolvidos");
+
+        const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+        saveAs(blob, "relatorio_chamados_resolvidos.xlsx");
     };
 
     const exportarPDF = () => {
@@ -131,6 +137,7 @@ export default function RelatorioResolvidos() {
 
             <div className="botoes-exportar">
                 <button onClick={exportarPDF} className="botao-exportar">Exportar PDF</button>
+                <button onClick={exportarExcel} className="botao-exportar">Exportar Excel</button>
             </div>
 
             {chamados.map((chamado) => (
