@@ -1,3 +1,5 @@
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -71,6 +73,24 @@ const exportarPDF = () => {
   doc.save("relatorio_tempo_resolucao.pdf");
 };
 
+const exportarExcel = () => {
+  const worksheetData = relatorio.map((r) => ({
+    Técnico: r.tecnico,
+    "Chamados Resolvidos": r.chamadosResolvidos,
+    "Média de Resolução (horas)": r.mediaResolucaoHoras !== null
+    ? Number(r.mediaResolucaoHoras).toFixed(2)
+    : "-",
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], {type: "application/octet-stream"});
+  saveAs(blob, "relatorio_tempo_resolucao.xlsx");
+};
+
   const chartData = {
     labels: relatorio.map((r) => r.tecnico),
     datasets: [
@@ -140,6 +160,7 @@ const exportarPDF = () => {
         <div className="botoes">
           <button className="btn buscar" onClick={buscarRelatorio}>Buscar</button>
           <button className="btn exportar" onClick={exportarPDF}>Exportar PDF</button>
+          <button className="btn exportar" onClick={exportarExcel}>Exportar Excel</button>
         </div>
       </div>
 
