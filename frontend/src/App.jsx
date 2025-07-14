@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
+import RecuperarSenha from "./pages/RecuperarSenha";
+import RedefinirSenha from "./pages/RedefinirSenha";
 import PainelTecnico from "./pages/PainelTecnico";
 import NovoChamado from "./pages/NovoChamado";
 import RelatorioResolvidos from "./pages/RelatorioChamadosResolvidos";
@@ -17,6 +19,8 @@ function App() {
         {/* Rotas públicas */}
         <Route path="/login" element={<Login />} />
         <Route path="/novo-chamado" element={<NovoChamado />} />
+        <Route path="/recuperar-senha" element={<RecuperarSenha/>}/>
+        <Route path="/redefinir-senha" element={<RedefinirSenha/>}/>
 
         {/* Redireciona a raiz para novo-chamado */}
         <Route path="/" element={<Navigate to="/novo-chamado" />} />

@@ -1,23 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { Usuario } = require("../models/usuario.model");
+const authController = require("../controllers/auth.controller");
 
-router.post("/login", async (req, res) => {
-    const { email, senha } = req.body;
-    const usuario = await Usuario.findOne({ where: { email } });
+// Rota de login
+router.post("/login", authController.login);
 
-    if (!usuario) return res.status(404).json({ erro: "Usuário não encontrado" });
+// Rota para recuperar senha
+router.post("/recuperar-senha", authController.recuperarSenha);
 
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
-    if (!senhaValida) return res.status(401).json({ erro: "Senha inválida" });
-
-    const token = jwt.sign({ id: usuario.id, email: usuario.email }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-    });
-
-    res.json({ token });
-});
+// Rota para redefinir senha
+router.post("/redefinir-senha", authController.redefinirSenha);
 
 module.exports = router;

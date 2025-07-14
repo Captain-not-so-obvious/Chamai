@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/Login.css";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -7,7 +8,7 @@ export default function Login() {
     const [mensagem, setMensagem] = useState("");
     const navigate = useNavigate();
 
-    const handlesubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setMensagem("");
 
@@ -24,12 +25,9 @@ export default function Login() {
 
             if (response.ok) {
                 localStorage.setItem("token", data.token);
-                setMensagem("Login realizado com sucesso!");
-
-                // Redireciona para o painel do técnico
                 navigate("/painel-tecnico");
             } else {
-                setMensagem(data.message || "Erro ao fazer login");
+                setMensagem(data.message || "Usuário ou senha inválidos.");
             }
         } catch (error) {
             console.error("Erro ao fazer login:", error);
@@ -37,24 +35,40 @@ export default function Login() {
         }
     };
 
+    const handleRecuperarSenha = () => {
+        navigate("/recuperar-senha");
+    };
+
     return (
         <div className="login-container">
-            <form className="login-form" onSubmit={handlesubmit}>
-                <h2>Login do Técnico</h2>
+            <form className="login-form" onSubmit={handleSubmit}>
+                <h2 className="login-title">Login do Técnico</h2>
+
                 {mensagem && <p className="login-message">{mensagem}</p>}
+
                 <input
                     type="email"
                     placeholder="email@provedor.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="login-input"
+                    required
                 />
+
                 <input
                     type="password"
                     placeholder="Senha"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
+                    className="login-input"
+                    required
                 />
-                <button type="submit">Entrar</button>
+
+                <button type="submit" className="login-button">Entrar</button>
+
+                <p className="login-link">
+                <a href="/recuperar-senha">Esqueci minha senha</a>
+                </p>
             </form>
         </div>
     );

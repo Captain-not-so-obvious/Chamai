@@ -1,0 +1,66 @@
+.recover-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0d1b2a;
+}
+
+.recover-form {
+    width: 30vw;
+    background: #1b263b;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+.recover-form h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #e0e1dd;
+}
+
+.recover-form input {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e0e1dd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.recover-form button {
+    padding: 0.75rem;
+    background-color: #778da9;
+    color: #e0e1dd;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 0.5rem;
+}
+
+.recover-form button:hover {
+    background-color: #415a77;
+}
+
+.recover-message {
+    color: #e0e1dd;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.voltar-button {
+    background-color: transparent;
+    color: #e0e1dd;
+    border: none;
+    margin-top: 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.voltar-button:hover {
+    color: #c0c0c0;
+}

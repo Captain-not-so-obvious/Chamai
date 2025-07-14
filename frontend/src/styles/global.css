@@ -61,13 +61,6 @@ button:hover {
   background-color: #415a77;
 }
 
-.message {
-  text-align: center;
-  margin-bottom: 15px;
-  color: #778da9;
-  font-weight: bold;
-}
-
 .login-link {
   margin-top: 20px;
   font-size: 0.9rem;
