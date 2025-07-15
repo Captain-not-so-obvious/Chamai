@@ -9,6 +9,18 @@
     overflow-y: auto;
 }
 
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.sidebar-logo {
+    width: 50px;
+    height: auto;
+}
+
 .sidebar-title {
     color: #e0e1dd;
     font-size: 1.5rem;

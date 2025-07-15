@@ -1,10 +1,14 @@
+import logo from "../assets/logo.png";
 import { NavLink } from 'react-router-dom';
 import "../styles/Sidebar.css";
 
 export default function Sidebar() {
     return (
         <div className='sidebar'>
-            <h2 className='sidebar-title'>Chamaí</h2>
+            <div className="sidebar-header">
+                <img src={logo} alt="Logo Chamaí" className="sidebar-logo" />
+                <h2 className="sidebar-title">Chamaí</h2>
+            </div>
             <nav>
                 <ul>
                     <li><NavLink to="/painel-tecnico">📋 Painel Técnico</NavLink></li>

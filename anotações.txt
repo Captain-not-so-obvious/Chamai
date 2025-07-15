@@ -22,6 +22,6 @@
 23 - Adicionar histórico ao chamado no frontend ( feito )
 24 - Colocar data abertura na tela de Chamados Resolvidos ( feito )
 25 - Reabrir exportar CSV ( feito )
-26 - Programar como recuperar senha a partir da tela de login
-27 - Criar logo do app
+26 - Programar como recuperar senha a partir da tela de login ( feito )
+27 - Criar logo do app ( feito )
 28 - mudar o idioma do app

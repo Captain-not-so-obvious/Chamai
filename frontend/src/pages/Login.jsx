@@ -1,3 +1,4 @@
+import logo from "../assets/logo.png"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
@@ -42,6 +43,7 @@ export default function Login() {
     return (
         <div className="login-container">
             <form className="login-form" onSubmit={handleSubmit}>
+                <img src={logo} alt="Logo Chamaí" className="login-logo" />
                 <h2 className="login-title">Login do Técnico</h2>
 
                 {mensagem && <p className="login-message">{mensagem}</p>}
