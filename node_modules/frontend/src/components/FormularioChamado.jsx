@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
 import "../styles/global.css";
 
 export default function FormularioChamado() {
@@ -54,6 +55,7 @@ export default function FormularioChamado() {
 
     return (
         <div className="form-container">
+            <img src={logo} alt="Logo Chamaí" className="form-logo"/>
             <h2>Abrir Novo Chamado</h2>
             {mensagem && <p className="message">{mensagem}</p>}
             <form onSubmit={handleSubmit}>
