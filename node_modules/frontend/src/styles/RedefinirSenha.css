@@ -36,15 +36,12 @@
 }
 
 .redefine-form .voltar-button {
-    background-color: #e0e1dd;
+    background-color: #0D1B2A;
+    color: #e0e1dd;
 }
 
 .redefine-message {
-    color: red;
+    color: #e0e1dd;
     margin-bottom: 10px;
     text-align: center;
-}
-
-.voltar-button {
-    color: #1b263b;
 }
