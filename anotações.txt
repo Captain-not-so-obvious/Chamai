@@ -24,4 +24,4 @@
 25 - Reabrir exportar CSV ( feito )
 26 - Programar como recuperar senha a partir da tela de login ( feito )
 27 - Criar logo do app ( feito )
-28 - mudar o idioma do app
+28 - mudar o idioma do app ( feito )

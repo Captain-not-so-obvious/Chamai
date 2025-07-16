@@ -1,24 +1,15 @@
-version: '3.8'
-
 services:
-  backend:
-    build: ./
+  chama-app:
+    build: .
+    container_name: chama-app
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - BREVO_API_KEY=suachave
-      - SENDER_EMAIL=suporte@dominio.com
-    networks:
-      - chama-network
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:80"
-    networks:
-      - chama-network
-
-networks:
-  chama-network:
-    driver: bridge
+      - DB_HOST=host.docker.internal
+      - DB_USER=seu_usuario
+      - DB_PASS=sua_senha
+      - DB_NAME=seu_banco
+    volumes:
+      - .:/app
+    restart: unless-stopped

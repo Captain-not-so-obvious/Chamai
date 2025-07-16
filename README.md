@@ -1,7 +1,9 @@
 
-# Chamaí
+# 📞 Chamaí
 
 **Chamaí** é uma plataforma completa para gerenciamento de chamados, desenvolvida para facilitar a comunicação entre usuários e técnicos, registrando e acompanhando o progresso dos chamados em tempo real.
+
+---
 
 ## ✅ Funcionalidades
 
@@ -15,16 +17,23 @@
 - **Painel Técnico**: Técnicos visualizam apenas os chamados em aberto e podem gerenciá-los.
 - **Filtros e Busca**: Chamados podem ser filtrados por status, setor, prioridade e termo de busca.
 - **Listagem de Setores**: O sistema identifica setores únicos automaticamente.
+- **Recuperação de Senha**: Fluxo completo de recuperação e redefinição de senha via e-mail.
+- **Exportação de Relatórios**: Exportação de chamados e relatórios em **PDF e XLSX** (Excel).
+
+---
 
 ## 🛠 Tecnologias Utilizadas
 
 - **Backend**: Node.js com Express.js
-- **Frontend**: React.js
+- **Frontend**: React.js com **Vite**
 - **Banco de Dados**: PostgreSQL
 - **ORM**: Sequelize
-- **Autenticação**: JWT (JSON Web Token) com envio de e-mails via API da Brevo
-- **Notificações**: Nodemailer
+- **Autenticação**: JWT (JSON Web Token)
+- **Envio de E-mails**: API da Brevo (ex-Sendinblue)
+- **Exportação de Relatórios**: `jsPDF` + `jspdf-autotable` + `xlsx`
 - **Versionamento**: Git, GitHub
+
+---
 
 ## ⚙️ Configuração
 
@@ -50,17 +59,34 @@
    DB_PASS=yourpassword
    DB_PORT=5432
    JWT_SECRET=your_jwt_secret
-   SMTP_USER=your_smtp_user
-   SMTP_PASS=your_smtp_password
+   BREVO_API_KEY=your_brevo_api_key
+   SENDER_EMAIL=seu-email@provedor.com
    ```
+
+---
 
 ## 🚀 Executando o Projeto
 
+### Backend
+
 ```bash
+npm install
 npm start
 ```
 
-- O servidor será iniciado em: `http://localhost:3000`
+- Servidor rodando em: `http://localhost:3000`
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+- Aplicação React com **Vite** rodando em: `http://localhost:5173`
+
+---
 
 ## 🧪 Testes com Postman
 
@@ -91,9 +117,19 @@ POST /usuarios/tecnicos
 Authorization: Bearer {token do admin}
 ```
 
+---
+
+## 📊 Exportação de Relatórios
+
+O sistema já exporta relatórios em **PDF e XLSX (Excel)** diretamente do painel.
+
+---
+
 ## 🤝 Contribuindo
 
 Sinta-se à vontade para abrir **issues** ou enviar **pull requests** com correções, melhorias ou novas funcionalidades.
+
+---
 
 ## 📄 Licença
 
