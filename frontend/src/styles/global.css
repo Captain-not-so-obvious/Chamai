@@ -136,3 +136,7 @@ button:hover {
   margin-bottom: 1rem;
   text-align: center;
 }
+
+.message {
+  color: #e0e1dd;
+}

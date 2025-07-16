@@ -18,7 +18,20 @@
 - **Filtros e Busca**: Chamados podem ser filtrados por status, setor, prioridade e termo de busca.
 - **Listagem de Setores**: O sistema identifica setores únicos automaticamente.
 - **Recuperação de Senha**: Fluxo completo de recuperação e redefinição de senha via e-mail.
-- **Exportação de Relatórios**: Exportação de chamados e relatórios em **PDF e XLSX** (Excel).
+- **Exportação de Relatórios**: Exportação de chamados e relatórios em **PDF e XLSX (Excel)**.
+- **Frontend com Vite**: O frontend do sistema foi desenvolvido com **React + Vite**, garantindo maior desempenho.
+
+---
+
+## 📸 Demonstração
+
+### Tela de Abertura de Chamado
+
+![Abertura de Chamado](./docs/screenshots/abertura-chamado.gif)
+
+### Painel Técnico
+
+![Painel Técnico](./docs/screenshots/painel-tecnico.png)
 
 ---
 
@@ -121,7 +134,7 @@ Authorization: Bearer {token do admin}
 
 ## 📊 Exportação de Relatórios
 
-O sistema já exporta relatórios em **PDF e XLSX (Excel)** diretamente do painel.
+O sistema já exporta relatórios em **PDF e XLSX (Excel)** diretamente do painel administrativo.
 
 ---
 
