@@ -1,6 +1,7 @@
 import logo from "../assets/logo.png"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../styles/Login.css";
 
 export default function Login() {
@@ -8,24 +9,26 @@ export default function Login() {
     const [senha, setSenha] = useState("");
     const [mensagem, setMensagem] = useState("");
     const navigate = useNavigate();
+    const { login: authLogin } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:3000/usuarios/login", {
+            const response = await fetch("http://localhost:3000/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ email, senha }),
+                credentials: "include", // Inclui cookies na requisição
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem("token", data.token);
+                authLogin(data.user);
                 navigate("/painel-tecnico");
             } else {
                 setMensagem(data.message || "Usuário ou senha inválidos.");

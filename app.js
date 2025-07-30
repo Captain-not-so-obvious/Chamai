@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const app = express();
 const db = require("./models/index");
 const { sequelize } = require("./models");
@@ -11,9 +12,11 @@ const relatorioRoutes = require("./routes/relatorio.routes");
 
 // Middlewares
 app.use(cors({
-  origin: 'http://localhost:5173' // Permite requisições do frontend
+  origin: 'http://localhost:5173', // Permite requisições do frontend
+  credentials: true
 }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Rotas
 app.use("/usuarios", require("./routes/usuario.routes"));

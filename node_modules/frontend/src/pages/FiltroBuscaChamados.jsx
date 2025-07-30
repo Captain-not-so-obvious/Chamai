@@ -9,8 +9,6 @@ export default function FiltroBuscaChamados() {
     const [setor, setSetor] = useState("");
     const [termo, setTermo] = useState("");
 
-    const token = localStorage.getItem("token");
-
     useEffect(() => {
         buscarSetores();
     }, []);
@@ -18,7 +16,7 @@ export default function FiltroBuscaChamados() {
     const buscarSetores = async () => {
     try {
         const res = await fetch("http://localhost:3000/chamados/setores", {
-            headers: { Authorization: `Bearer ${token}` },
+            credentials: "include",
         });
 
         if (!res.ok) {
@@ -53,7 +51,7 @@ export default function FiltroBuscaChamados() {
             }
 
             const res = await fetch(url, {
-                headers: { Authorization: `Bearer ${token}` },
+                credentials: "include",
             });
 
             const data = await res.json();

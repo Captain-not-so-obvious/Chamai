@@ -2,7 +2,6 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import Papa from "papaparse";
 import { useEffect, useState } from "react";
 import "../styles/RelatorioChamadosResolvidos.css";
 
@@ -15,9 +14,8 @@ export default function RelatorioResolvidos() {
 
     // Buscar todos os técnicos
     const buscarTecnicos = () => {
-        const token = localStorage.getItem("token");
         fetch("http://localhost:3000/usuarios/tecnicos", {
-            headers: { Authorization: `Bearer ${token}` }
+            credentials: "include",
         })
             .then(res => res.json())
             .then(data => setTecnicos(data))
@@ -25,7 +23,6 @@ export default function RelatorioResolvidos() {
     };
 
     const buscarChamados = () => {
-        const token = localStorage.getItem("token");
 
         if (dataInicio && dataFim && new Date(dataInicio) > new Date(dataFim)) {
             alert("A data de início não pode ser maior que a data final.");
@@ -40,9 +37,7 @@ export default function RelatorioResolvidos() {
         }
 
         fetch(`http://localhost:3000/relatorios/resolvidos/historico?${queryParams.toString()}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            credentials: "include",
         })
 
         .then((res) => res.json())

@@ -31,7 +31,22 @@ const login = async (req, res) => {
             { expiresIn: "8h" }
         );
 
-        res.json({ token });
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            maxAge: 8 * 60 * 60 * 1000, // 8 horas
+            path: '/',
+            // secure: true // Descomentar em produção
+            // sameSite: 'Lax' // Descomentar em produção
+        });
+
+        res.json({
+            message: "Login bem-sucedido!",
+            user: {
+                id: usuario.id,
+                nome: usuario.nome,
+                tipo: usuario.tipo
+            }
+        });
     } catch (error) {
         console.error("Erro no login:", error);
         res.status(500).json({ message: "Erro no login" });
@@ -80,4 +95,14 @@ const redefinirSenha = async (req, res) => {
     }
 };
 
-module.exports = { login, recuperarSenha, redefinirSenha };
+const logout = (req, res) => {
+    res.clearCookie('jwt', {
+        httpOnly: true,
+        path: '/',
+        // secure: true // Descomentar em produção
+        // sameSite: 'Lax' // Descomentar em produção
+    });
+    res.status(200).json({ message: "Logout bem-sucedido." });
+};
+
+module.exports = { login, recuperarSenha, redefinirSenha, logout };

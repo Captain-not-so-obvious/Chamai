@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import "../styles/HistoricoChamado.css"
 
 export default function HistoricoChamado({ chamadoId }) {
@@ -12,12 +11,9 @@ export default function HistoricoChamado({ chamadoId }) {
     }, [chamadoId]);
 
     const carregarHistorico = async () => {
-        const token = localStorage.getItem("token");
         try {
             const res = await fetch(`http://localhost:3000/historico/${chamadoId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                credentials: "include",
             });
             const data = await res.json();
             if (res.ok) {
@@ -31,15 +27,14 @@ export default function HistoricoChamado({ chamadoId }) {
     };
 
     const adicionarComentario = async () => {
-        const token = localStorage.getItem("token");
         try {
             const res = await fetch(`http://localhost:3000/historico/${chamadoId}`, {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({ descricao: novoComentario }),
+                credentials: "include",
             });
 
             if (res.ok) {

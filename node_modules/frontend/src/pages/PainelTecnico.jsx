@@ -1,42 +1,36 @@
 import { useEffect, useState } from "react";
 import ChamadoCard from "../components/ChamadoCard";
-import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../context/AuthContext";
 import "../styles/PainelTecnico.css";
 
 export default function PainelTecnico() {
     const [chamados, setChamados] = useState([]);
-    const [tecnicoId, setTecnicoId] = useState(null);
     const [mensagem, setMensagem] = useState("");
     const [setorFiltro, setSetorFiltro] = useState('');
     const [prioridadeFiltro, setPrioridadeFiltro] = useState('');
     const [statusFiltro, setStatusFiltro] = useState('');
     const [loading, setloading] = useState(false);
 
+    const { user } = useAuth();
+
     useEffect(() => {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            setMensagem("Usuário não autenticado.");
-            return;
+        if (user && user.id) {
+            carregarChamados();
+        } else if (!user) {
+            setMensagem("Usuário não autenticado. Por favor, faça login.");
         }
-
-        try {
-            const decoded = jwtDecode(token);
-            setTecnicoId(decoded.id);
-            carregarChamados(token);
-        } catch (err) {
-            setMensagem("Token inválido.");
-        }
-    }, []);
+    }, [user]);
 
     const carregarChamados = async (tokenParam) => {
     setloading(true);
-    const token = tokenParam || localStorage.getItem("token");
 
     try {
-        const response = await fetch("http://localhost:3000/chamados/status/aberto", {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+      const response = await fetch(
+        "http://localhost:3000/chamados/status/aberto",
+        {
+          credentials: "include",
+        }
+      );
 
         const data = await response.json();
         setChamados(data);
@@ -48,9 +42,8 @@ export default function PainelTecnico() {
     }
 };
 
-    const buscarChamadosComFiltros = async (tokenParam) => {
+    const buscarChamadosComFiltros = async () => {
         setloading(true);
-        const token = tokenParam || localStorage.getItem("token");
 
         try {
             const params = new URLSearchParams();
@@ -61,66 +54,99 @@ export default function PainelTecnico() {
             else params.append("status", "aberto");
 
             const response = await fetch(`http://localhost:3000/chamados/filtro-busca?${params.toString()}`, {
-                headers: { Authorization: `Bearer ${token}` },
+                credentials: "include",
             });
 
             const data = await response.json();
-            setChamados(data);
+            if (response.ok) {
+                setChamados(data);
+            } else {
+                setMensagem(data.message || "Erro ao buscar chamados com filtros.");
+            }
         } catch (error) {
             console.error("Erro ao buscar chamados com filtros:", error);
             setMensagem("Erro ao buscar chamados com filtros.");
         } finally {
-            setloading(false);
+            setLoading(false);
         }
     };
 
-    const atribuirChamado = async (id) => {
-        const token = localStorage.getItem("token");
-        await fetch(`http://localhost:3000/chamados/${id}/atribuir`, {
+      const atribuirChamado = async (id) => {
+    if (!user || !user.id) {
+        setMensagem("Erro: ID do técnico não disponível para atribuição.");
+        return;
+    }
+    const tecnicoId = user.id; // ⬅️ Pegando o ID do usuário logado do contexto
+
+    try {
+        const response = await fetch(`http://localhost:3000/chamados/${id}/atribuir`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ tecnicoId }),
+            credentials: "include",
         });
-        await carregarChamados(token);
-    };
+
+        if (response.ok) {
+            await carregarChamados(); // Recarrega os chamados após atribuição
+        } else {
+            const data = await response.json();
+            setMensagem(data.message || "Erro ao atribuir chamado.");
+        }
+    } catch (error) {
+        console.error("Erro ao atribuir chamado:", error);
+        setMensagem("Erro de conexão ao atribuir chamado.");
+    }
+  };
 
     const resolverChamado = async (id) => {
-        const token = localStorage.getItem("token");
-        await fetch(`http://localhost:3000/chamados/${id}/resolver`, {
+    try {
+        const response = await fetch(`http://localhost:3000/chamados/${id}/resolver`, {
             method: "PUT",
             headers: {
-                Authorization: `Bearer ${token}`,
             },
+            credentials: "include",
         });
-        await carregarChamados(token);
-    };
+
+        if (response.ok) {
+            await carregarChamados(); // Recarrega os chamados após resolver
+        } else {
+            const data = await response.json();
+            setMensagem(data.message || "Erro ao resolver chamado.");
+        }
+    } catch (error) {
+        console.error("Erro ao resolver chamado:", error);
+        setMensagem("Erro de conexão ao resolver chamado.");
+    }
+  };
 
     const alterarPrioridade = async (id, novaPrioridade) => {
-        const token = localStorage.getItem("token");
 
-        try {
-            const response = await fetch(`http://localhost:3000/chamados/${id}/prioridade`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ prioridade: novaPrioridade }),
-            });
-
-            if (response.ok) {
-                alert("Prioridade alterada!");
-                await carregarChamados(token);
-            } else {
-                alert("Erro ao atualizar a prioridade!");
-            }
-        } catch (error) {
-            console.error("Erro ao alterar prioridade:", error);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/chamados/${id}/prioridade`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prioridade: novaPrioridade }),
+          credentials: "include",
         }
-    };
+      );
+
+      if (response.ok) {
+        alert("Prioridade alterada!");
+        await carregarChamados(); // Recarrega os chamados
+      } else {
+        const data = await response.json();
+        alert(data.message || "Erro ao atualizar a prioridade!");
+      }
+    } catch (error) {
+      console.error("Erro ao alterar prioridade:", error);
+    }
+  };
 
     return (
         <div className="painel-container">

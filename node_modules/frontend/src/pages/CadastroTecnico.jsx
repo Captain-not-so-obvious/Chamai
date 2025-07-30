@@ -10,7 +10,6 @@ export default function CadastroTecnico() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem("token");
 
         if (senha !== confirmarSenha) {
             setMensagem("As senhas não são iguais. Por favor, verifique.");
@@ -22,9 +21,9 @@ export default function CadastroTecnico() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({ nome, email, senha })
+                body: JSON.stringify({ nome, email, senha }),
+                credentials: "include",
             });
 
             if (response.ok) {

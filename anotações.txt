@@ -25,3 +25,8 @@
 26 - Programar como recuperar senha a partir da tela de login ( feito )
 27 - Criar logo do app ( feito )
 28 - mudar o idioma do app ( feito )
+versão 1.0 pronta
+29 - campo e-mail não pode ser obrigatório 
+30 - adicionar index do chamado e data abertura na mensagem de confirmação de chamado
+31 - adicionar níveis de acesso
+32 - adicionar e-mail quando o chamado for aberto, atualizado ( fechado já tem )

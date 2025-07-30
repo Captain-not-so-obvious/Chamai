@@ -11,9 +11,11 @@ import RelatorioResolvidosPorUsuarioOuSetor from "../src/pages/RelatorioChamados
 import FiltroBuscaChamados from "./pages/FiltroBuscaChamados";
 import CadastroTecnico from "./pages/CadastroTecnico";
 import RotaPrivada from "./components/RotaPrivada";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
       <Routes>
         {/* Rotas públicas */}
@@ -43,6 +45,7 @@ function App() {
         </Route>
       </Routes>
     </Router>
+  </AuthProvider>
   );
 }
 

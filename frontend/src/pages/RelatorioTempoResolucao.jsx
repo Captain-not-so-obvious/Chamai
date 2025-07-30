@@ -11,7 +11,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  scales,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import "../styles/RelatorioTempoResolucao.css";
@@ -26,9 +25,8 @@ const RelatorioTempoResolucao = () => {
   const [relatorio, setRelatorio] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     fetch("http://localhost:3000/usuarios?tipo=tecnico", {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     })
       .then((res) => res.json())
       .then(setTecnicos)
@@ -37,10 +35,9 @@ const RelatorioTempoResolucao = () => {
 
   const buscarRelatorio = async () => {
     try {
-      const token = localStorage.getItem("token");
       const params = new URLSearchParams({ tecnicoId, dataInicio, dataFim });
       const response = await fetch(`http://localhost:3000/relatorios/tempo-resolucao?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -104,7 +101,7 @@ const exportarExcel = () => {
   };
 
   const ChartOptions = {
-    resposive: true,
+    responsive: true,
     plugins: {
       legend: { display: false },
       title: {

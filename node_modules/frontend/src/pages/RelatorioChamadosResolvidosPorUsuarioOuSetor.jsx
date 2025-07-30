@@ -11,14 +11,11 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
     const [setores, setSetores] = useState([]);
     const [filtrado, setFiltrado] = useState(false); // Novo estado
 
-    const token = localStorage.getItem("token");
 
     const buscarUsuarios = async () => {
         try {
             const res = await fetch("http://localhost:3000/usuarios", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                credentials: "include",
             });
             const data = await res.json();
             setUsuarios(data);
@@ -30,9 +27,7 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
     const buscarSetores = async () => {
     try {
         const res = await fetch("http://localhost:3000/chamados/setores", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            credentials: "include",
         });
         const data = await res.json();
         setSetores(data); // Agora pega direto os setores dos chamados
@@ -54,9 +49,7 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
             }
 
             const response = await fetch(url, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                credentials: "include",
             });
 
             if (!response.ok) throw new Error("Erro na requisição");
