@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth.controller");
 const authMiddleware = require("../middleware/authMiddleware");
+const { isTecnicoOrAdmin } = require("../middleware/roleMiddleware");
 
 // Rota de login
 router.post("/login", authController.login);
@@ -14,7 +15,7 @@ router.post("/redefinir-senha", authController.redefinirSenha);
 
 router.post("/logout", authController.logout);
 
-router.get('/me', authMiddleware, (req, res) => {
+router.get('/me', authMiddleware, isTecnicoOrAdmin, (req, res) => {
     res.json({ user: req.usuario });
 });
 
