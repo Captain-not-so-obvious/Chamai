@@ -11,21 +11,35 @@ export default function RelatorioResolvidos() {
     const [dataInicio, setDataInicio] = useState("");
     const [dataFim, setDataFim] = useState("");
     const [tecnicos, setTecnicos] = useState([]);
+    const [mensagemErro, setMensagemErro] = useState("");
 
     // Buscar todos os técnicos
     const buscarTecnicos = () => {
+        setMensagemErro(""); // Limpa mensagens de erro anteriores
         fetch("http://localhost:3000/usuarios/tecnicos", {
             credentials: "include",
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(errorData => {
+                        throw new Error(errorData.message || "Erro ao buscar técnicos.");
+                    });
+                }
+                return res.json();
+            })
             .then(data => setTecnicos(data))
-            .catch(err => console.error("Erro ao buscar técnicos:", err));
+            .catch(err => {
+                console.error("Erro ao buscar técnicos:", err);
+                setMensagemErro(err.message || "Erro ao carregar lista de técnicos.");
+                setTecnicos([]); // Garante que 'tecnicos' seja um array vazio em caso de erro
+            });
     };
 
     const buscarChamados = () => {
+        setMensagemErro(""); // Limpa mensagens de erro anteriores
 
         if (dataInicio && dataFim && new Date(dataInicio) > new Date(dataFim)) {
-            alert("A data de início não pode ser maior que a data final.");
+            setMensagemErro("A data de início não pode ser maior que a data final.");
             return;
         }
 
@@ -39,12 +53,26 @@ export default function RelatorioResolvidos() {
         fetch(`http://localhost:3000/relatorios/resolvidos/historico?${queryParams.toString()}`, {
             credentials: "include",
         })
-
-        .then((res) => res.json())
-        .then((data) => {
-            setChamados(data);
-        })
-        .catch((err) => console.error("Erro ao buscar chamados:", err));
+            .then((res) => {
+                if (!res.ok) {
+                    return res.json().then(errorData => {
+                        throw new Error(errorData.message || "Erro ao buscar chamados.");
+                    });
+                }
+                return res.json();
+            })
+            .then((data) => {
+                // Garante que 'data' é um array antes de setar o estado
+                setChamados(Array.isArray(data) ? data : []);
+                if (!Array.isArray(data) || data.length === 0) {
+                    setMensagemErro("Nenhum chamado encontrado com os filtros selecionados ou acesso negado.");
+                }
+            })
+            .catch((err) => {
+                console.error("Erro ao buscar chamados:", err);
+                setMensagemErro(err.message || "Erro ao carregar chamados resolvidos.");
+                setChamados([]); // Garante que 'chamados' seja um array vazio em caso de erro
+            });
     };
 
     useEffect(() => {
@@ -52,6 +80,10 @@ export default function RelatorioResolvidos() {
     }, []);
 
     const exportarExcel = () => {
+        if (!Array.isArray(chamados) || chamados.length === 0) {
+            alert("Não há dados para exportar para Excel.");
+            return;
+        }
         const dados = chamados.map((chamado) => ({
             Título: chamado.titulo,
             Status: chamado.status,
@@ -75,6 +107,10 @@ export default function RelatorioResolvidos() {
     };
 
     const exportarPDF = () => {
+        if (!Array.isArray(chamados) || chamados.length === 0) {
+            alert("Não há dados para exportar para PDF.");
+            return;
+        }
         const doc = new jsPDF();
         doc.text("Relatório de Chamados Resolvidos", 14, 15);
 
@@ -135,22 +171,34 @@ export default function RelatorioResolvidos() {
                 <button onClick={exportarExcel} className="botao-exportar">Exportar Excel</button>
             </div>
 
-            {chamados.map((chamado) => (
-                <div key={chamado.id} className="chamado-card">
-                    <h4 className="chamado-titulo">{chamado.titulo}</h4>
-                    <p className="chamado-status">Status: {chamado.status}</p>
-                    <h5 className="historico-titulo">Histórico:</h5>
-                    <ul className="historico-lista">
-                        {chamado.historico.map((item, idx) => (
-                            <li key={idx}>
-                                {item.descricao} - {new Date(item.dataEvento).toLocaleString()} - Autor: {item.Usuario?.nome || "Desconhecido"}
-                            </li>
+            {mensagemErro && <p className="mensagem-erro">{mensagemErro}</p>} {/* Exibe a mensagem de erro */}
+
+            {Array.isArray(chamados) && chamados.length === 0 ? (
+                !mensagemErro && <p className="mensagem-vazia">Nenhum Chamado Encontrado com os Filtros Atuais</p>
+            ) : (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Chamados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {chamados.map((chamado) => (
+                            <div key={chamado.id} className="chamado-card">
+                                <h4 className="chamado-titulo">{chamado.titulo}</h4>
+                                <p className="chamado-status">Status: {chamado.status}</p>
+                                <h5 className="historico-titulo">Histórico:</h5>
+                                <ul className="historico-lista">
+                                    {Array.isArray(chamado.historico) && chamado.historico.map((item, idx) => (
+                                        <li key={idx}>
+                                            {item.descricao} - {new Date(item.dataEvento).toLocaleString()} - Autor: {item.Usuario?.nome || "Desconhecido"}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         ))}
-                    </ul>
-                </div>
-            ))}
-            {chamados.length === 0 && (
-                <p className="mensagem-vazia">Nenhum Chamado Encontrado</p>
+                    </tbody>
+                </table>
             )}
         </div>
     );
