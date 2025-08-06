@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import RecuperarSenha from "./pages/RecuperarSenha";
@@ -13,39 +13,46 @@ import CadastroTecnico from "./pages/CadastroTecnico";
 import RotaPrivada from "./components/RotaPrivada";
 import { AuthProvider } from "./context/AuthContext";
 
+// NOVO: Componente para Rotas Protegidas e com Layout
+const RotasComLayout = ({ requiredTipo }) => {
+  return (
+    <RotaPrivada requiredTipo={requiredTipo}>
+      <Layout>
+        <Outlet />
+      </Layout>
+    </RotaPrivada>
+  );
+};
+
 function App() {
   return (
     <AuthProvider>
-    <Router>
-      <Routes>
-        {/* Rotas públicas */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/novo-chamado" element={<NovoChamado />} />
-        <Route path="/recuperar-senha" element={<RecuperarSenha/>}/>
-        <Route path="/redefinir-senha" element={<RedefinirSenha/>}/>
+      <Router>
+        <Routes>
+          {/* Rotas públicas */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/novo-chamado" element={<NovoChamado />} />
+          <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+          <Route path="/" element={<Navigate to="/novo-chamado" />} />
 
-        {/* Redireciona a raiz para novo-chamado */}
-        <Route path="/" element={<Navigate to="/novo-chamado" />} />
-
-        {/* Rotas privadas protegidas com Layout e Sidebar */}
-        <Route 
-          element={
-            <RotaPrivada>
-              <Layout />
-            </RotaPrivada>
-          }
-        >
-          <Route path="/painel-tecnico" element={<PainelTecnico />} />
-          <Route path="/relatorios/resolvidos" element={<RelatorioResolvidos />} />
-          <Route path="/relatorios/media-tecnico" element={<RelatorioTempoResolucao />} />
-          <Route path="/relatorios/abertos-por-usuario" element={<RelatorioResolvidosPorUsuarioOuSetor />} />
-          <Route path="/relatorios/filtro-busca" element={<FiltroBuscaChamados />} />
-          <Route path="/cadastro-tecnico" element={<CadastroTecnico />} />
-          {/* Adicione outras rotas privadas aqui */}
-        </Route>
-      </Routes>
-    </Router>
-  </AuthProvider>
+          {/* ⬅️ NOVO: Estrutura de Rotas Aninhadas */}
+          {/* Rotas para técnicos e admins */}
+          <Route element={<RotasComLayout requiredTipo={['tecnico', 'admin']} />}>
+            <Route path="/painel-tecnico" element={<PainelTecnico />} />
+          </Route>
+          
+          {/* Rotas exclusivas para admins */}
+          <Route element={<RotasComLayout requiredTipo="admin" />}>
+            <Route path="/relatorios/resolvidos" element={<RelatorioResolvidos />} />
+            <Route path="/relatorios/media-tecnico" element={<RelatorioTempoResolucao />} />
+            <Route path="/relatorios/abertos-por-usuario" element={<RelatorioResolvidosPorUsuarioOuSetor />} />
+            <Route path="/relatorios/filtro-busca" element={<FiltroBuscaChamados />} />
+            <Route path="/cadastro-tecnico" element={<CadastroTecnico />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
