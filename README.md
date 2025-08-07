@@ -27,7 +27,11 @@
 
 ### Tela de Abertura de Chamado
 
+![Abertura de Chamado](./docs/screenshots/abertura-chamado.gif)
+
 ### Painel Técnico
+
+![Painel Técnico](./docs/screenshots/painel-tecnico.png)
 
 -----
 
