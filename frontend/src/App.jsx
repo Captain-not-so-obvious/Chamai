@@ -12,6 +12,7 @@ import FiltroBuscaChamados from "./pages/FiltroBuscaChamados";
 import CadastroTecnico from "./pages/CadastroTecnico";
 import RotaPrivada from "./components/RotaPrivada";
 import { AuthProvider } from "./context/AuthContext";
+import CadastroAdmin from "./pages/CadastroAdmin";
 
 // NOVO: Componente para Rotas Protegidas e com Layout
 const RotasComLayout = ({ requiredTipo }) => {
@@ -49,6 +50,7 @@ function App() {
             <Route path="/relatorios/abertos-por-usuario" element={<RelatorioResolvidosPorUsuarioOuSetor />} />
             <Route path="/relatorios/filtro-busca" element={<FiltroBuscaChamados />} />
             <Route path="/cadastro-tecnico" element={<CadastroTecnico />} />
+            <Route path="/cadastro-admin" element={<CadastroAdmin />} />
           </Route>
         </Routes>
       </Router>

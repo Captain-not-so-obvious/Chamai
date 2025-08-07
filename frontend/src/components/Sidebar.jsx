@@ -39,6 +39,7 @@ export default function Sidebar() {
                         <>
                     <li className='submenu-title'>👤 Cadastros</li>
                     <li><NavLink to="/cadastro-tecnico">Cadastro de Técnicos</NavLink></li>
+                    <li><NavLink to="/cadastro-admin">Cadastro de Técnicos Administradores</NavLink></li>
                     {/* <li className='submenu-title'>🤖 Inteligência Artificial</li> */}
                     {/* <li><NavLink to="/ia/classificacao">Classificação Automática</NavLink></li> */}
                         </>

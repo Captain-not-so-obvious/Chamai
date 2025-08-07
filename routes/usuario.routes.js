@@ -11,6 +11,9 @@ router.post("/registro", usuarioController.criarUsuario);
 //Rota para cadastro de técnicos
 router.post("/tecnicos", authMiddleware, isAdmin, authMiddleware, usuarioController.criarTecnico)
 
+// Rota para criar técnicos admins
+router.post("/admin", authMiddleware, isAdmin, usuarioController.criarAdmin);
+
 router.get("/", authMiddleware, isTecnicoOrAdmin, usuarioController.listarUsuarios);
 router.get("/tecnicos", authMiddleware, isTecnicoOrAdmin, usuarioController.listarTecnicos);
 

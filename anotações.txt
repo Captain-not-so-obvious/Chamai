@@ -28,5 +28,5 @@
 versão 1.0 pronta
 29 - campo e-mail não pode ser obrigatório 
 30 - adicionar index do chamado e data abertura na mensagem de confirmação de chamado
-31 - adicionar níveis de acesso
+31 - adicionar níveis de acesso ( feito )
 32 - adicionar e-mail quando o chamado for aberto, atualizado ( fechado já tem )
