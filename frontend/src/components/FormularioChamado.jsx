@@ -39,7 +39,9 @@ export default function FormularioChamado() {
             const data = await response.json();
 
             if (response.ok) {
-                setMensagem("Chamado enviado com sucesso!");
+                const idChamado = data.chamado.id;
+                const dataAbertura = new Date(data.chamado.dataAbertura).toLocaleDateString("pt-BR");
+                setMensagem(`Chamado #${idChamado} enviado com sucesso! Chamado Aberto em ${dataAbertura}.`);
                 setNome("");
                 setEmail("");
                 setTitulo("");
