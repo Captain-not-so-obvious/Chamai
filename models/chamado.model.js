@@ -11,14 +11,30 @@ module.exports = (sequelize, DataTypes) => {
         prioridade: {
             type: DataTypes.ENUM("baixa", "media", "alta", "critica"),
             allowNull: false,
+            defaultValue: "baixa",
         },
         status: {
-            type: DataTypes.ENUM("aberto", "em_atendimento", "resolvido"),
+            type: DataTypes.ENUM("aberto", "aguardando_atribuicao", "em_atendimento", "resolvido"),
+            allowNull: false,
             defaultValue: "aberto",
+        },
+        tecnicoDirecionadoId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'usuarios',
+                key: 'id',
+            },
+            allowNull: true,
+            defaultValue: null,
         },
         dataAbertura: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
+        },
+        dataExecucao: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+            allowNull: true,
         },
         dataFechamento: {
             type: DataTypes.DATE,
@@ -41,6 +57,7 @@ module.exports = (sequelize, DataTypes) => {
     Chamado.associate = (models) => {
         Chamado.belongsTo(models.Usuario, { foreignKey: "usuarioId", as: "solicitante" });
         Chamado.belongsTo(models.Usuario, { foreignKey: "tecnicoId", as: "tecnico" });
+        Chamado.belongsTo(models.Usuario, { foreignKey: "tecnicoDirecionadoId", as: "tecnicoDirecionado" });
         Chamado.hasMany(models.Historico, { foreignKey: "chamadoId", as: "historico" });
     };
 

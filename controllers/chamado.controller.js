@@ -41,7 +41,10 @@ const criarChamado = async (req, res) => {
             descricao,
             prioridade,
             setor,
-            usuarioId: usuario.id
+            usuarioId: usuario.id,
+            status: "aberto",
+            tecnicoDirecionadoId: null,
+            tecnicoId: null,
         });
 
         await Historico.create({
@@ -161,26 +164,40 @@ const listarChamadosPorStatus = async (req, res) => {
 
 const atribuirTecnico = async (req, res) => {
     const { id } = req.params;
-    const { tecnicoId } = req.body;
+    const tecnicoId = req.usuario.id;
 
     try {
         const chamado = await Chamado.findByPk(id, {
             include: [
-                { model: Usuario, as: "solicitante" },
-                { model: Usuario, as: "tecnico" }
-            ]
+                { model: Usuario, as: "solicitante" }
+            ],
         });
 
         if (!chamado) {
             return res.status(404).json({ message: 'Chamado não encontrado' });
         }
 
-        chamado.tecnicoId = tecnicoId;
-        await chamado.save();
+        if (chamado.status !== "aguardando_atribuicao") {
+            return res.status(400).json({ message: "O chamado não pode ser atribuído no momento. Status incorreto." });
+        }
 
-        const tecnicoResponsavel = await Usuario.findByPk(tecnicoId);
-        const mensagemAtualizacao = `O chamado foi atribuído a um técnico: ${tecnicoResponsavel.nome}`;
+        if (chamado.tecnicoDirecionadoId !== tecnicoId) {
+            return res.status(403).json({ message: "Acesso negado. Este chamado não foi direcionado a você." })
+        }
 
+        await chamado.update({
+            tecnicoId: tecnicoId,
+            status: "em_atendimento",
+            dataExecucao: new Date(),
+        });
+
+        await Historico.create({
+            chamadoId: chamadoId,
+            descricao: `Chamado atribuído ao técnico ${req.usuario.nome}.`,
+            autorId: tecnicoId,
+        });
+
+        const mensagemAtualizacao = `Seu chamado foi atribuído ao técnico ${req.usuario.nome}.`;
         await enviarEmailChamadoAtualizado(
             chamado.solicitante.email,
             chamado.solicitante.nome,
@@ -269,6 +286,32 @@ const alterarPrioridade = async (req, res) => {
     }
 };
 
+const direcionarChamado = async (req, res) => {
+    const { id } = req.params;
+    const { tecnicoId } = req.body;
+
+    try {
+        if (req.usuario.tipo !== 'admin') {
+            return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem direcionar chamados.' })
+        }
+
+        const chamado = await Chamado.findByPk(id);
+
+        if (!chamado) {
+            return res.status(404).json({ message: "Chamado não Encontrado" });
+        }
+
+        // Atualiza o status e o técnico direcionado
+        await chamado.update({
+            status: 'aguardando_atribuicao',
+            tecnicoDirecionadoId: tecnicoId,
+        });
+    } catch (error) {
+        console.error('Erro ao direcionar chamado:', error);
+        res.status(500).json({ message: 'Erro ao direcionar chamado:', error });
+    }
+};
+
 module.exports = {
     criarChamado,
     resolverChamado,
@@ -278,5 +321,6 @@ module.exports = {
     atribuirTecnico,
     listarSetoresDosChamados,
     buscarChamadosComFiltros,
-    alterarPrioridade
+    alterarPrioridade,
+    direcionarChamado
 };
