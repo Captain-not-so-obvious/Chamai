@@ -1,7 +1,7 @@
 const db = require("../models");
 const { Usuario, Chamado, Historico } = db;
 const { Op, fn, col } = require("sequelize");
-const { enviarEmailChamadoResolvido, enviarEmailChamadoAtualizado } = require("../services/email.service");
+const { enviarEmailChamadoResolvido, enviarEmailChamadoAtualizado, enviarEmailChamadoAberto } = require("../services/email.service");
 
 // Reuso dos includes padrão
 const chamadoIncludes = [
@@ -49,6 +49,13 @@ const criarChamado = async (req, res) => {
             descricao: "Chamado criado pelo solicitante",
             autorId: usuario.id,
         });
+
+        await enviarEmailChamadoAberto(
+            solicitanteEmail,
+            solicitanteNome,
+            chamado.id,
+            chamado.titulo
+        );
 
         res.status(201).json({ message: "Chamado criado com sucesso", chamado });
     } catch (error) {
