@@ -35,7 +35,7 @@ const enviarEmailRecuperacaoSenha = async (destinatario, token) => {
   const link = `http://localhost:5173/redefinir-senha?token=${token}`;
 
   const sendSmtpEmail = {
-    sender: { email: process.env.SENDER_EMAIL, name: 'Suporte TI' },
+    sender: { email: process.env.SENDER_EMAIL, name: 'Suporte TI - Não Responder' },
     to: [{ email: destinatario }],
     subject: "Recuperação de Senha - Chamaí",
     htmlContent:`
@@ -59,4 +59,58 @@ const enviarEmailRecuperacaoSenha = async (destinatario, token) => {
   }
 };
 
-module.exports = { enviarEmailChamadoResolvido, enviarEmailRecuperacaoSenha };
+const enviarEmailChamadoAberto = async (destinatarioEmail, destinatarioNome, chamadoId, chamadoTitulo) => {
+  try {
+    const sendSmtpEmail = {
+      sender,
+      to: [{ email: destinatarioEmail }],
+      subject: `Chamado #${chamadoId} Aberto: ${chamadoTitulo}`,
+      htmlContent: `
+      <html>
+        <body>
+          <h3>Olá, ${destinatarioNome}</h3>
+          <p>Seu chamado foi aberto com sucesso!</p>
+          <p>Detalhes do Chamado:</p>
+          <ul>
+            <li><strong>ID:</strong> #${chamadoId}</li>
+            <li><strong>Título:</strong> #${chamadoTitulo}</li>
+            <li><strong>Status:</strong> Aberto</li>
+          </ul>
+          <p>Acompanhe o andamento pelo e-mail.</p>
+          <p>Atenciosamente,<br/>Equipe de Suporte</p>
+        </body>
+      </html>
+      `
+    };
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log(`E-mail de confirmação de chamado aberto enviado para e-mail cadastrado`);
+  } catch (error) {
+    console.error(`Erro ao enviar e-mail de abertura de chamado`, error);
+  }
+};
+
+const enviarEmailChamadoAtualizado = async (destinatarioEmail, destinatarioNome, chamadoId, mensagemAtualizacao) => {
+  try {
+    const sendSmtpEmail = {
+      sender,
+      to: [{ email: destinatarioEmail }],
+      subject: `Chamado #${chamadoId} Atualizado: ${mensagemAtualizacao}`,
+      htmlContent: `
+      <html>
+        <body>
+          <h3>Olá, ${destinatarioNome}</h3>
+          <p>Seu Chamado #${chamadoId} foi atualizado:</p>
+          <p><strong>${mensagemAtualizacao}</strong></p>
+          <p>Atenciosamente, <br/>Equipe de Suporte</p>
+        </body>
+      </html>
+      `,
+    };
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log(`E-mail de atualização do chamado enviado`);
+  } catch (error) {
+    console.error(`Erro ao enviar e-mail de atualização`)
+  }
+};
+
+module.exports = { enviarEmailChamadoResolvido, enviarEmailRecuperacaoSenha, enviarEmailChamadoAberto, enviarEmailChamadoAtualizado };

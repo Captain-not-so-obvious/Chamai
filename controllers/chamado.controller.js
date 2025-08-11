@@ -1,7 +1,7 @@
 const db = require("../models");
 const { Usuario, Chamado, Historico } = db;
 const { Op, fn, col } = require("sequelize");
-const { enviarEmailChamadoResolvido } = require("../services/email.service");
+const { enviarEmailChamadoResolvido, enviarEmailChamadoAtualizado } = require("../services/email.service");
 
 // Reuso dos includes padrão
 const chamadoIncludes = [
@@ -157,13 +157,29 @@ const atribuirTecnico = async (req, res) => {
     const { tecnicoId } = req.body;
 
     try {
-        const chamado = await Chamado.findByPk(id);
+        const chamado = await Chamado.findByPk(id, {
+            include: [
+                { model: Usuario, as: "solicitante" },
+                { model: Usuario, as: "tecnico" }
+            ]
+        });
+
         if (!chamado) {
             return res.status(404).json({ message: 'Chamado não encontrado' });
         }
 
         chamado.tecnicoId = tecnicoId;
         await chamado.save();
+
+        const tecnicoResponsavel = await Usuario.findByPk(tecnicoId);
+        const mensagemAtualizacao = `O chamado foi atribuído a um técnico: ${tecnicoResponsavel.nome}`;
+
+        await enviarEmailChamadoAtualizado(
+            chamado.solicitante.email,
+            chamado.solicitante.nome,
+            chamado.id,
+            mensagemAtualizacao
+        );
 
         res.json({ message: 'Técnico atribuído com sucesso', chamado });
     } catch (error) {
