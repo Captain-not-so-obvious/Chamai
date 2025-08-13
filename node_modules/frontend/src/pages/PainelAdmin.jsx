@@ -24,7 +24,7 @@ export default function PainelAdmin() {
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:3000/chamados", { // ⬅️ NOVO: Rota para todos os chamados
+            const response = await fetch("http://localhost:3000/chamados?status_ne=resolvido", {
                 credentials: "include",
             });
 
@@ -265,6 +265,30 @@ export default function PainelAdmin() {
 
   };
 
+const adminAutoAtribuirChamado = async (chamadoId) => {
+    setLoading(true);
+    try {
+        const response = await fetch(`http://localhost:3000/chamados/${chamadoId}/admin-atribuir`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+        });
+
+        if (response.ok) {
+            alert("Chamado Iniciado!");
+            carregarTodosChamados();
+        } else {
+            const data = await response.json();
+            setMensagem(data.message || "Erro ao iniciar chamado");
+        }
+    } catch (error) {
+        console.error("Erro ao iniciar o chamado:", error);
+        setMensagem("Erro de conexão ao se atribuir ao chamado.");
+    } finally {
+        setLoading(false);
+    }
+};
+
 
 
     return (
@@ -363,6 +387,8 @@ export default function PainelAdmin() {
                     onResolver={resolverChamado}
                     onAlterarPrioridade={alterarPrioridade}
                     onDirecionar={direcionarChamado}
+                    onAdminAutoAtribuir={adminAutoAtribuirChamado}
+                    onTecnicoAceitar={() => {}}
                 />
             ))}
         </div>

@@ -47,34 +47,30 @@ export default function PainelTecnico() {
         }
     };
 
-    const atribuirChamado = async (id) => {
-        if (!user || !user.id) {
-            setMensagem("Erro: ID do técnico não disponível para atribuição.");
-            return;
-        }
-        const tecnicoId = user.id;
+    const tecnicoAceitarChamadoHandler = async (chamadoId) => {
+        setLoading(true);
+    try {
+        const response = await fetch(`http://localhost:3000/chamados/${chamadoId}/aceitar`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+        });
 
-        try {
-            const response = await fetch(`http://localhost:3000/chamados/${id}/atribuir`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ tecnicoId }),
-                credentials: "include",
-            });
-
-            if (response.ok) {
-                await carregarMeusChamados();
-            } else {
-                const data = await response.json();
-                setMensagem(data.message || "Erro ao tribuir chamado.");
-            }
-        } catch (error) {
-            console.error("Erro ao atribuir chamado:", error);
-            setMensagem("Erro de conexão ao atribuir chamado");
+        if (response.ok) {
+            alert("Chamado Iniciado!");
+            carregarMeusChamados();
+        } else {
+            const data = await response.json();
+            setMensagem(data.message || "Erro ao iniciar chamado");
         }
-    };
+    } catch (error) {
+        console.error("Erro ao iniciar o chamado:", error);
+        setMensagem("Erro de conexão ao se atribuir ao chamado.");
+    } finally {
+        setLoading(false);
+    }
+};
+    
 
     const resolverChamado = async (id) => {
         try {
@@ -106,7 +102,8 @@ export default function PainelTecnico() {
                     <ChamadoCard
                         key={chamado.id}
                         chamado={chamado}
-                        onAtribuir={atribuirChamado}
+                        onTecnicoAceitar={tecnicoAceitarChamadoHandler}
+                        onAdminAutoAtribuir={() => {}}
                         onResolver={resolverChamado}
                     />
                 ))

@@ -19,7 +19,8 @@ router.get("/status/:status", authMiddleware, isAdmin, chamadoController.listarC
 router.get("/meus-chamados", authMiddleware, isTecnicoOrAdmin, chamadoController.listarMeusChamados);
 
 // atribui técnico ao chamado
-router.put("/:id/atribuir", authMiddleware, isTecnicoOrAdmin, chamadoController.atribuirTecnico);
+router.put("/:id/admin-atribuir", authMiddleware, isAdmin, chamadoController.adminAutoAtribuir);
+router.put("/:id/aceitar", authMiddleware, isTecnicoOrAdmin, chamadoController.tecnicoAceitarChamado);
 
 // Rota que lista o setor do chamado
 router.get("/setores", authMiddleware, isAdmin, chamadoController.listarSetoresDosChamados);

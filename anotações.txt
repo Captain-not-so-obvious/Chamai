@@ -31,8 +31,8 @@ versão 1.0 pronta
 31 - adicionar níveis de acesso ( feito )
 32 - adicionar e-mail para o usuário quando o chamado for aberto, atualizado ( fechado já tem )
 versão 1.1
-33 - Usuário administrador consegue atribuir chamado para técnicos 
-34 - O admin poderá direcionar o chamado, mas o técnico ainda terá que atribuir o chamado a si 
-35 - Chamado terá quatro status - enviado (quando o chamado só foi enviado e está no painel), aguardando status (antes de ser atribuído a um técnico), em_atendimento(quando o técnico pegar o chamado pra resolver) concluído quando for finalizado.
-36 - Toda mudança de status deve ser avisada via e-mail. Como um event listener ( feito )
-37 - O usuário técnico só terá acesso ao chamados que foram direcionados a ele pelo admin
+33 - Usuário administrador consegue atribuir chamado para técnicos ( feito )
+34 - O admin poderá direcionar o chamado, mas o técnico ainda terá que atribuir o chamado a si
+35 - Chamado terá quatro status - enviado (quando o chamado só foi enviado e está no painel), aguardando status (antes de ser atribuído a um técnico), em_atendimento(quando o técnico pegar o chamado pra resolver) concluído quando for finalizado. ( feito )
+36 - Toda mudança de status deve ser avisada via e-mail. ( feito )
+37 - O usuário técnico só terá acesso ao chamados que foram direcionados a ele pelo admin ( feito )

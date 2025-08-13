@@ -81,7 +81,7 @@ const resolverChamado = async (req, res) => {
         });
 
         if (!chamado) {
-            return res.status(404).json({ message: "Chamado não encontrado" });
+            return res.status(44).json({ message: "Chamado não encontrado" });
         }
 
         if (!chamado.tecnicoId) {
@@ -98,26 +98,44 @@ const resolverChamado = async (req, res) => {
             autorId: req.usuario.id,
         });
 
-        await enviarEmailChamadoResolvido(
-            chamado.solicitante.email,
-            chamado.solicitante.nome,
-            chamado.titulo
-        );
+        try {
+            if (chamado.solicitante && chamado.solicitante.email) {
+                await enviarEmailChamadoResolvido(
+                    chamado.solicitante.email,
+                    chamado.solicitante.nome,
+                    chamado.titulo
+                );
+            } else {
+                // Se não houver solicitante, apenas registramos um alerta no console do servidor
+                console.error(`ALERTA: Solicitante do chamado ID ${chamadoId} não encontrado ou sem e-mail. E-mail de resolução não enviado.`);
+            }
 
-        res.json({ message: "Chamado resolvido e e-mail enviado com sucesso" });
+        } catch (emailError) {
+            console.error("ALERTA: O chamado foi resolvido, mas o e-mail de notificação falhou.", emailError);
+        }
+        
+        return res.status(200).json({ message: "Chamado resolvido com sucesso." });
+
     } catch (error) {
-        console.error("Erro ao resolver chamado:", error);
-        res.status(500).json({ message: "Erro ao resolver chamado" });
+        console.error("Erro crítico ao resolver chamado:", error);
+        return res.status(500).json({ message: "Erro ao resolver chamado" });
     }
 };
 
 const listarChamados = async (req, res) => {
-    const { usuarioId, status } = req.query;
+    const { usuarioId, status, status_ne } = req.query;
 
     try {
         let where = {};
         if (usuarioId) where.usuarioId = usuarioId;
-        if (status) where.status = status;
+        if (status) {
+            where.status = status;
+        } 
+        else if (status_ne) {
+            where.status = {
+                [Op.ne]: status_ne
+            };
+        }
 
         const chamados = await Chamado.findAll({
             where,
@@ -193,55 +211,6 @@ const listarChamadosPorStatus = async (req, res) => {
         res.json(chamados);
     } catch (error) {
         res.status(500).json({ message: "Erro ao buscar chamados por status", error });
-    }
-};
-
-const atribuirTecnico = async (req, res) => {
-    const { id } = req.params;
-    const tecnicoId = req.usuario.id;
-
-    try {
-        const chamado = await Chamado.findByPk(id, {
-            include: [
-                { model: Usuario, as: "solicitante" }
-            ],
-        });
-
-        if (!chamado) {
-            return res.status(404).json({ message: 'Chamado não encontrado' });
-        }
-
-        if (chamado.status !== "aguardando_atribuicao") {
-            return res.status(400).json({ message: "O chamado não pode ser atribuído no momento. Status incorreto." });
-        }
-
-        if (chamado.tecnicoDirecionadoId !== tecnicoId) {
-            return res.status(403).json({ message: "Acesso negado. Este chamado não foi direcionado a você." })
-        }
-
-        await chamado.update({
-            tecnicoId: tecnicoId,
-            status: "em_atendimento",
-            dataExecucao: new Date(),
-        });
-
-        await Historico.create({
-            chamadoId: chamadoId,
-            descricao: `Chamado atribuído ao técnico ${req.usuario.nome}.`,
-            autorId: tecnicoId,
-        });
-
-        const mensagemAtualizacao = `Seu chamado foi atribuído ao técnico ${req.usuario.nome}.`;
-        await enviarEmailChamadoAtualizado(
-            chamado.solicitante.email,
-            chamado.solicitante.nome,
-            chamado.id,
-            mensagemAtualizacao
-        );
-
-        res.json({ message: 'Técnico atribuído com sucesso', chamado });
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao atribuir técnico', error });
     }
 };
 
@@ -335,6 +304,10 @@ const direcionarChamado = async (req, res) => {
             return res.status(404).json({ message: "Chamado não Encontrado" });
         }
 
+        if (chamado.status !== 'aberto') {
+            return res.status(400).json({ message: 'Chamados só podem ser direcionados quando estão com o status "aberto".' });
+        }
+
         // Atualiza o status e o técnico direcionado
         await chamado.update({
             status: 'aguardando_atribuicao',
@@ -351,6 +324,70 @@ const direcionarChamado = async (req, res) => {
     }
 };
 
+const adminAutoAtribuir = async (req, res) => {
+    const {id} = req.params;
+    const adminId = req.usuario.id;
+
+    try {
+        const chamado = await db.Chamado.findByPk(id);
+        if (!chamado) {
+            return res.status(404).json({ message: "Chamado não encontrado." });
+        }
+
+        if (chamado.status !== 'aberto' && chamado.status !== 'aguardando_atribuicao') {
+            return res.status(400).json({ message: `Não é possível se atribuir a um chamado com status "${chamado.status}".` });
+        }
+
+        await chamado.update({
+            tecnicoId: adminId, // o admin se torna o técnico responsável
+            tecnicoDirecionadoId: null, // limpa o direcionamento
+            status: 'em_atendimento', // Pula direto em_atendimento
+            dataExecucao: new Date(),
+        });
+
+        await db.Historico.create({
+            chamadoId: id,
+            descricao: `Chamado atribuído ao técnico ${req.usuario.nome}.`,
+            autorId: adminId,
+        });
+        return res.status(200).json({ message: "Chamado atribuído com sucesso." });
+    } catch (error) {
+        console.error("Erro na função:", error);
+        return res.status(500).json({ message: "Erro interno ao autoatribuir o chamado." });
+    }
+};
+
+const tecnicoAceitarChamado = async (req, res) => {
+    const {id} = req.params;
+    const tecnicoId = req.usuario.id;
+
+    try {
+        const chamado = await db.Chamado.findByPk(id);
+        if (!chamado) {
+            return res.status(404).json({ message: "Chamado não encontrado." });
+        }
+        if (chamado.status !== 'aguardando_atribuicao' || chamado.tecnicoDirecionadoId !== tecnicoId) {
+            return res.status(403).json({ message: "Acesso negado. Este chamado não foi atribuído a você." });
+        }
+
+        await chamado.update({
+            tecnicoId: tecnicoId,
+            status: 'em_atendimento',
+            dataExecucao: new Date(),
+        });
+
+        await db.Historico.create({
+            chamadoId: id,
+            descricao: `Atendimento iniciado pelo técnico ${req.usuario.nome}.`,
+            autorId: tecnicoId,
+        });
+        return res.status(200).json({ message: "Chamado aceito e iniciado" });
+    } catch (error) {
+        console.error("Erro na função:", error);
+        return res.status(500).json({ message: "Erro interno ao aceitar o chamado." })
+    }
+};
+
 module.exports = {
     criarChamado,
     resolverChamado,
@@ -358,9 +395,10 @@ module.exports = {
     listarMeusChamados,
     listarChamadosPorUsuario,
     listarChamadosPorStatus,
-    atribuirTecnico,
     listarSetoresDosChamados,
     buscarChamadosComFiltros,
     alterarPrioridade,
-    direcionarChamado
+    direcionarChamado,
+    adminAutoAtribuir,
+    tecnicoAceitarChamado
 };

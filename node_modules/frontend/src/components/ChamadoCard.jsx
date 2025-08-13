@@ -3,7 +3,14 @@ import HistoricoChamado from "./HistoricoChamado";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ChamadoCard.css";
 
-export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterarPrioridade, onDirecionar }) {
+export default function ChamadoCard({ 
+    chamado, 
+    onResolver, 
+    onAlterarPrioridade, 
+    onDirecionar,
+    onAdminAutoAtribuir,
+    onTecnicoAceitar 
+}) {
     const [novaPrioridade, setNovaPrioridade] = useState(chamado.prioridade);
     const [mostrarHistorico, setMostrarHistorico] = useState(false);
     const [tecnicos, setTecnicos] = useState([]);
@@ -11,6 +18,7 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
     const { user } = useAuth();
 
     useEffect(() => {
+        // Lógica para buscar técnicos
         if (user && user.tipo === 'admin') {
             fetch("http://localhost:3000/usuarios/tecnicos", { credentials: "include" })
                 .then(res => res.json())
@@ -19,6 +27,7 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
         }
     }, [user]);
 
+    // Handlers para os botões
     const handleAlterarPrioridade = () => {
         if (novaPrioridade !== chamado.prioridade) {
             onAlterarPrioridade(chamado.id, novaPrioridade);
@@ -35,8 +44,6 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
 
     const isTecnico = user?.tipo === 'tecnico';
     const isAdmin = user?.tipo === 'admin';
-
-    // Ações são permitidas apenas se o chamado não estiver resolvido
     const isChamadoAtivo = chamado.status !== "resolvido";
 
     return (
@@ -57,53 +64,60 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
             
             {isChamadoAtivo && (
                 <div className="botoes">
-                    {/* Botão de Atribuir: Admins e Técnicos podem usar. */}
-                    {chamado.status === "aberto" && (isAdmin || isTecnico) && (
-                        <button onClick={() => onAtribuir(chamado.id)}>Iniciar Chamado</button>
-                    )}
-                    {isTecnico && chamado.status === "aguardando_atribuicao" && chamado.tecnicoDirecionadoId === user.id && (
-                        <button onClick={() => onAtribuir(chamado.id)}>Iniciar Chamado</button>
-                    )}
                     
-                    {/* Botão de Resolver: Admins e Técnicos podem usar. */}
-                    {chamado.status === "em_atendimento" && (isAdmin || (isTecnico && chamado.tecnicoId === user.id)) && (
-                        <button onClick={() => onResolver(chamado.id)}>Resolver Chamado</button>
-                    )}
-                    
-                    {/* Ações Exclusivas para Admin */}
+                    {/* --- AÇÕES EXCLUSIVAS DO ADMIN --- */}
                     {isAdmin && (
                         <>
-                            <div className="direcionar-chamado">
-                                <select
-                                    value={tecnicoSelecionado}
-                                    onChange={(e) => setTecnicoSelecionado(e.target.value)}
-                                >
-                                    <option value="">Direcionar para...</option>
-                                    {tecnicos.map(tecnico => (
-                                        <option key={tecnico.id} value={tecnico.id}>{tecnico.nome}</option>
-                                    ))}
-                                </select>
-                                <button onClick={handleDirecionarChamado}>Direcionar</button>
-                            </div>
+                            {/* REGRA A1: Admin pode se autoatribuir se o chamado estiver aberto ou aguardando */}
+                            {(chamado.status === 'aberto' || chamado.status === 'aguardando_atribuicao') && (
+                                <button onClick={() => onAdminAutoAtribuir(chamado.id)}>Iniciar Chamado</button>
+                            )}
 
-                            <div className="alterar-prioridade">
-                                <select
-                                    value={novaPrioridade}
-                                    onChange={(e) => setNovaPrioridade(e.target.value)}
-                                >
-                                    <option value="baixa">Baixa</option>
-                                    <option value="media">Média</option>
-                                    <option value="alta">Alta</option>
-                                    <option value="critica">Crítica</option>
-                                </select>
-                                <button onClick={handleAlterarPrioridade}>Alterar Prioridade</button>
-                            </div>
+                            {chamado.status === 'aberto' && (
+                                <>
+                                    <div className="direcionar-chamado">
+                                        <select
+                                            value={tecnicoSelecionado}
+                                            onChange={(e) => setTecnicoSelecionado(e.target.value)}
+                                        >
+                                            <option value="">Direcionar para...</option>
+                                            {tecnicos.map(tecnico => (
+                                                <option key={tecnico.id} value={tecnico.id}>{tecnico.nome}</option>
+                                            ))}
+                                        </select>
+                                        <button onClick={handleDirecionarChamado}>Direcionar</button>
+                                    </div>
+                                    <div className="alterar-prioridade">
+                                        <select value={novaPrioridade} onChange={(e) => setNovaPrioridade(e.target.value)}>
+                                            <option value="baixa">Baixa</option>
+                                            <option value="media">Média</option>
+                                            <option value="alta">Alta</option>
+                                            <option value="critica">Crítica</option>
+                                        </select>
+                                        <button onClick={handleAlterarPrioridade}>Alterar</button>
+                                    </div>
+                                </>
+                            )}
                         </>
+                    )}
+
+                    {/* --- AÇÕES EXCLUSIVAS DO TÉCNICO --- */}
+                    {isTecnico && (
+                        <>
+                            {chamado.status === 'aguardando_atribuicao' && chamado.tecnicoDirecionadoId === user.id && (
+                                <button onClick={() => onTecnicoAceitar(chamado.id)}>Iniciar Chamado</button>
+                            )}
+                        </>
+                    )}
+                    
+                    {/* Aparece para a pessoa que está com o chamado atribuído (seja admin ou técnico) */}
+                    {chamado.status === 'em_atendimento' && chamado.tecnicoId === user.id && (
+                        <button onClick={() => onResolver(chamado.id)}>Resolver Chamado</button>
                     )}
                 </div>
             )}
             
-            {/* Adicionar e Visualizar Comentários: Apenas Técnicos e Admins */}
+            {/* Seção de Histórico */}
             {(isTecnico || isAdmin) && (
                 <div className="historico-toggle">
                     <button
@@ -114,8 +128,6 @@ export default function ChamadoCard({ chamado, onAtribuir, onResolver, onAlterar
                     </button>
                 </div>
             )}
-
-            {/* Apenas mostra o componente se houver permissão */}
             {(isTecnico || isAdmin) && mostrarHistorico && <HistoricoChamado chamadoId={chamado.id} />}
         </div>
     );
