@@ -29,7 +29,7 @@ export default function Login() {
 
             if (response.ok) {
                 authLogin(data.user);
-                navigate("/painel-tecnico");
+                navigate("/dashboard");
             } else {
                 setMensagem(data.message || "Usuário ou senha inválidos.");
             }

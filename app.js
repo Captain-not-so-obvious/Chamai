@@ -30,9 +30,9 @@ sequelize.authenticate()
   .then(() => console.log("Conexão com banco estabelecida com sucesso"))
   .catch(err => console.error("Erro na conexão com o banco:", err));
 
-db.sequelize.sync({ alter: true })
-  .then(() => console.log("Modelos sincronizados com sucesso"))
-  .catch(err => console.error("Erro ao sincronizar modelos", err));
+// db.sequelize.sync({ alter: true })
+//   .then(() => console.log("Modelos sincronizados com sucesso"))
+//   .catch(err => console.error("Erro ao sincronizar modelos", err));
 
 // Inicia o servidor
 app.listen(3000, () => {

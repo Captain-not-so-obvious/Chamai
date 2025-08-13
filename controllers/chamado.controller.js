@@ -14,6 +14,11 @@ const chamadoIncludes = [
         model: Usuario,
         as: "tecnico",
         attributes: ["nome"]
+    },
+    {
+        model: Usuario,
+        as: "tecnicoDirecionado",
+        attributes: ["nome"]
     }
 ];
 
@@ -123,6 +128,35 @@ const listarChamados = async (req, res) => {
         res.json(chamados);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao listar chamados', error });
+    }
+};
+
+const listarMeusChamados = async (req, res) => {
+    const tecnicoId = req.usuario.id;
+
+    try {
+        const meusChamados = await Chamado.findAll({
+            where: {
+                [Op.or]: [
+                    // Chamados que foram direcionados ao técnico, mas que ainda não foram atribuídos
+                    { tecnicoDirecionadoId: tecnicoId, status: "aguardando_atribuicao" },
+                    // Chamados que o técnico já está atendendo
+                    { tecnicoId: tecnicoId, status: "em_atendimento"},
+                ],
+            },
+            include: [
+                { model: Usuario, as: 'solicitante', attributes: ['nome', 'setor'] },
+                { model: Usuario, as: 'tecnico', attributes: ['nome'] },
+                { model: Usuario, as: 'tecnicoDirecionado', attributes: ['nome'] },
+            ],
+            // Ordenar por prioridade e depois por data de abertura
+            order: [['prioridade', 'DESC'], ['dataAbertura', 'ASC']],
+        });
+
+        res.json(meusChamados);
+    } catch (error) {
+        console.error("Erro ao buscar meus chamados:", error);
+        res.status(500).json({ message: "Erro ao buscar meus chamados." });
     }
 };
 
@@ -306,6 +340,11 @@ const direcionarChamado = async (req, res) => {
             status: 'aguardando_atribuicao',
             tecnicoDirecionadoId: tecnicoId,
         });
+
+        return res.status(200).json({
+            message: 'Chamado Direcionado com sucesso.',
+        });
+
     } catch (error) {
         console.error('Erro ao direcionar chamado:', error);
         res.status(500).json({ message: 'Erro ao direcionar chamado:', error });
@@ -316,6 +355,7 @@ module.exports = {
     criarChamado,
     resolverChamado,
     listarChamados,
+    listarMeusChamados,
     listarChamadosPorUsuario,
     listarChamadosPorStatus,
     atribuirTecnico,

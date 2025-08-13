@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         dataExecucao: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+            defaultValue: null,
             allowNull: true,
         },
         dataFechamento: {
