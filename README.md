@@ -1,25 +1,24 @@
-
 # 📞 Chamaí
 
-**Chamaí** é uma plataforma completa para gerenciamento de chamados, desenvolvida para facilitar a comunicação entre usuários e técnicos, registrando e acompanhando o progresso dos chamados em tempo real.
+Chamaí é uma plataforma completa para gerenciamento de chamados, desenvolvida para facilitar a comunicação entre usuários, técnicos e administradores, permitindo o registro, acompanhamento e resolução de chamados de forma eficiente.
 
------
+---
 
 ## ✅ Funcionalidades
 
-- **Criação de Chamados**: Usuários podem abrir chamados com título, descrição, prioridade e setor.
-- **Cadastro de Técnicos**: Administradores podem cadastrar técnicos com login e senha próprios.
-- **Atribuição de Técnicos**: Técnicos podem se atribuir aos chamados.
-- **Alteração de Prioridade**: Técnicos podem alterar a prioridade dos chamados em aberto.
-- **Resolução de Chamados**: Técnicos podem resolver chamados, e o sistema envia um e-mail automático ao solicitante.
-- **Histórico de Ações**: Cada ação importante em um chamado é registrada e pode ser consultada.
-- **Autenticação e Autorização**: Login com **cookies HTTP-only e controle de acesso baseado em papéis (RBAC)** para usuários, técnicos e administradores.
-- **Painel Técnico**: Técnicos visualizam apenas os chamados em aberto e podem gerenciá-los.
-- **Filtros e Busca**: Chamados podem ser filtrados por status, setor, prioridade e termo de busca.
-- **Listagem de Setores**: O sistema identifica setores únicos automaticamente.
-- **Recuperação de Senha**: Fluxo completo de recuperação e redefinição de senha via e-mail.
-- **Exportação de Relatórios**: Exportação de chamados e relatórios em **PDF e XLSX (Excel)**.
-- **Frontend com Vite**: O frontend do sistema foi desenvolvido com **React + Vite**, garantindo maior desempenho.
+- **Criação de Chamados**: Usuários podem abrir chamados informando título, descrição, prioridade e setor. O sistema envia um e-mail de confirmação ao solicitante.
+- **Cadastro de Técnicos e Administradores**: Administradores podem cadastrar novos técnicos e outros administradores com login e senha exclusivos.
+- **Direcionamento de Chamados**: Administradores podem direcionar chamados para técnicos específicos.
+- **Atribuição de Chamados**: Técnicos podem se atribuir a chamados que foram direcionados a eles, mudando o status para `em_atendimento`.
+- **Exibição do Técnico no Chamado**: O nome do técnico atribuído é exibido no card do chamado.
+- **Alteração de Prioridade**: Administradores e técnicos podem alterar a prioridade de chamados em aberto.
+- **Resolução de Chamados**: Administradores e técnicos podem resolver chamados; o sistema envia e-mail automático ao solicitante.
+- **Histórico de Ações**: Toda movimentação relevante é registrada no histórico de cada chamado.
+- **Autenticação e Autorização (RBAC)**: Sistema de login com cookies HTTP-only, com permissões distintas para usuários, técnicos e administradores.
+- **Painel Técnico**: Técnicos visualizam apenas os chamados direcionados a eles ou que já estão em atendimento.
+- **Ordenação por Data**: Chamados são listados do mais recente para o mais antigo.
+- **Filtros e Busca**: Administradores podem filtrar chamados por status, prioridade, setor e termos de busca.
+- **Listagem Dinâmica de Setores**: O sistema detecta automaticamente os setores existentes nos chamados.
 
 -----
 
@@ -35,35 +34,37 @@
 
 -----
 
+
 ## 🛠 Tecnologias Utilizadas
 
-- **Backend**: Node.js com Express.js
-- **Frontend**: React.js com **Vite**
-- **Banco de Dados**: PostgreSQL
-- **ORM**: Sequelize
-- **Autenticação**: JWT (JSON Web Token)
-- **Envio de E-mails**: API da Brevo
-- **Exportação de Relatórios**: `jsPDF` + `jspdf-autotable` + `xlsx`
-- **Versionamento**: Git, GitHub
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=jsonwebtokens)
+![Nodemailer](https://img.shields.io/badge/Nodemailer-009C7C?style=for-the-badge&logo=nodemailer&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 
------
+---
 
 ## ⚙️ Configuração
 
-1.  Clone o repositório:
-
 ```bash
+# Clone o repositório
 git clone https://github.com/Captain-not-so-obvious/Chamai.git
 cd Chamai
-```
 
-2.  Instale as dependências:
-
-```bash
+# Instale as dependências na raiz e no frontend
 npm install
+cd frontend
+npm install
+cd ..
 ```
 
-3.  Configure o arquivo `.env`:
+Crie o arquivo `.env` na raiz do projeto:
 
 ```env
 DB_HOST=localhost
@@ -72,78 +73,73 @@ DB_USER=postgres
 DB_PASS=yourpassword
 DB_PORT=5432
 JWT_SECRET=your_jwt_secret
-BREVO_API_KEY=your_brevo_api_key
-SENDER_EMAIL=seu-email@provedor.com
+SMTP_USER=your_smtp_user
+SMTP_PASS=your_smtp_password
 ```
 
------
+---
 
 ## 🚀 Executando o Projeto
 
-### Backend
+### Backend (raiz do projeto)
 
 ```bash
-npm install
+# Executa migrations
+npx sequelize db:migrate
+
+# Inicia o servidor Node.js
 npm start
 ```
 
-- Servidor rodando em: `http://localhost:3000`
-
-### Frontend
+### Frontend (pasta `frontend`)
 
 ```bash
-cd frontend
-npm install
 npm run dev
 ```
 
-- Aplicação React com **Vite** rodando em: `http://localhost:5173`
+Aplicação disponível em: **[http://localhost:5173](http://localhost:5173)**
 
------
+---
 
 ## 🧪 Testes com Postman
 
-A autenticação é gerenciada por **cookies HTTP-only**, o que significa que o token de acesso não é retornado no corpo da resposta e o cliente não pode acessá-lo via JavaScript. O Postman/Insomnia gerenciará o cookie automaticamente após o login.
+A autenticação é feita via **cookies HTTP-only**. O token não é retornado no corpo da resposta e não pode ser acessado via JavaScript.
 
-### Criar chamado
+### Criar Chamado (Público)
 
 ```http
 POST /chamados
 ```
 
+**Payload exemplo**:
+
 ```json
 {
   "solicitanteNome": "João Silva",
   "solicitanteEmail": "joao.silva@example.com",
-  "titulo": "Problema com login",
-  "descricao": "Não consigo acessar minha conta.",
+  "titulo": "Erro no sistema",
+  "descricao": "Tela de login não carrega.",
   "prioridade": "alta",
   "setor": "Financeiro"
 }
 ```
 
-### Login
+### Login (Admin/Técnico)
 
 ```http
 POST /auth/login
 ```
 
-**Nota:** Após o login, as requisições subsequentes para rotas protegidas (como `GET /chamados/status/aberto` ou `POST /usuarios/tecnicos`) serão autenticadas automaticamente pelo navegador/Postman via cookie.
+Após login, as requisições para rotas protegidas serão autenticadas automaticamente.
 
------
-
-## 📊 Exportação de Relatórios
-
-O sistema já exporta relatórios em **PDF e XLSX (Excel)** diretamente do painel administrativo.
-
------
+---
 
 ## 🤝 Contribuindo
 
-Sinta-se à vontade para abrir **issues** ou enviar **pull requests** com correções, melhorias ou novas funcionalidades.
+Contribuições são bem-vindas! Abra uma issue ou envie um pull request com melhorias.
 
------
+---
 
 ## 📄 Licença
 
-Este projeto é de uso **livre e aberto**. Você pode modificá-lo e distribuí-lo conforme necessário.
+Este projeto é de uso livre e aberto.
