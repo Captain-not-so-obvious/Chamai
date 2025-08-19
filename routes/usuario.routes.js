@@ -9,7 +9,7 @@ const { isTecnicoOrAdmin } = require("../middleware/roleMiddleware");
 router.post("/registro", usuarioController.criarUsuario);
 
 //Rota para cadastro de técnicos
-router.post("/tecnicos", authMiddleware, isAdmin, authMiddleware, usuarioController.criarTecnico)
+router.post("/tecnicos", authMiddleware, isAdmin, usuarioController.criarTecnico)
 
 // Rota para criar técnicos admins
 router.post("/admin", authMiddleware, isAdmin, usuarioController.criarAdmin);
