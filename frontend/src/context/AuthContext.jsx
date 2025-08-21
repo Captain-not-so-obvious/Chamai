@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
     const checkAuthStatus = async () => {
         try {
-            const response = await fetch("http://localhost:3000/auth/me", {
+            const response = await fetch("http://localhost:3000/api/auth/me", {
                 method: "GET",
                 credentials: "include",
             });
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     // Função para fazer logout
     const logout = async () => {
         try {
-            await fetch("http://localhost:3000/auth/logout", {
+            await fetch("http://localhost:3000/api/auth/logout", {
                 method: "POST",
                 credentials: "include",
             });

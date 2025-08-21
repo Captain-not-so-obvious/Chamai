@@ -22,7 +22,7 @@ export default function PainelTecnico() {
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:3000/chamados/meus-chamados", {
+            const response = await fetch("http://localhost:3000/api/chamados/meus-chamados", {
                 credentials: "include",
             });
 
@@ -50,7 +50,7 @@ export default function PainelTecnico() {
     const tecnicoAceitarChamadoHandler = async (chamadoId) => {
         setLoading(true);
     try {
-        const response = await fetch(`http://localhost:3000/chamados/${chamadoId}/aceitar`, {
+        const response = await fetch(`http://localhost:3000/api/chamados/${chamadoId}/aceitar`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -74,7 +74,7 @@ export default function PainelTecnico() {
 
     const resolverChamado = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/chamados/${id}/resolver`, {
+            const response = await fetch(`http://localhost:3000/api/chamados/${id}/resolver`, {
                 method: "PUT",
                 headers: {},
                 credentials: "include",

@@ -16,7 +16,7 @@ export default function RelatorioResolvidos() {
     // Buscar todos os técnicos
     const buscarTecnicos = () => {
         setMensagemErro(""); // Limpa mensagens de erro anteriores
-        fetch("http://localhost:3000/usuarios/tecnicos", {
+        fetch("http://localhost:3000/api/usuarios/tecnicos", {
             credentials: "include",
         })
             .then(res => {
@@ -50,7 +50,7 @@ export default function RelatorioResolvidos() {
             queryParams.append("dataFim", dataFim);
         }
 
-        fetch(`http://localhost:3000/relatorios/resolvidos/historico?${queryParams.toString()}`, {
+        fetch(`http://localhost:3000/api/relatorios/resolvidos/historico?${queryParams.toString()}`, {
             credentials: "include",
         })
             .then((res) => {

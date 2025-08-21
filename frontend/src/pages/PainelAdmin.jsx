@@ -24,7 +24,7 @@ export default function PainelAdmin() {
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:3000/chamados?status_ne=resolvido", {
+            const response = await fetch("http://localhost:3000/api/chamados?status_ne=resolvido", {
                 credentials: "include",
             });
 
@@ -60,7 +60,7 @@ export default function PainelAdmin() {
             if (prioridadeFiltro) params.append("prioridade", prioridadeFiltro);
             if (statusFiltro) params.append("status", statusFiltro);
             
-            const response = await fetch(`http://localhost:3000/chamados/filtro-busca?${params.toString()}`, {
+            const response = await fetch(`http://localhost:3000/api/chamados/filtro-busca?${params.toString()}`, {
                 credentials: "include",
             });
 
@@ -90,7 +90,7 @@ export default function PainelAdmin() {
     const direcionarChamado = async (chamadoId, tecnicoId) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/chamados/${chamadoId}/direcionar`, {
+            const response = await fetch(`http://localhost:3000/api/chamados/${chamadoId}/direcionar`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ tecnicoId }),
@@ -129,7 +129,7 @@ export default function PainelAdmin() {
 
     try {
 
-        const response = await fetch(`http://localhost:3000/chamados/${id}/atribuir`, {
+        const response = await fetch(`http://localhost:3000/api/chamados/${id}/atribuir`, {
 
             method: "PUT",
 
@@ -175,7 +175,7 @@ export default function PainelAdmin() {
 
     try {
 
-        const response = await fetch(`http://localhost:3000/chamados/${id}/resolver`, {
+        const response = await fetch(`http://localhost:3000/api/chamados/${id}/resolver`, {
 
             method: "PUT",
 
@@ -221,7 +221,7 @@ export default function PainelAdmin() {
 
       const response = await fetch(
 
-        `http://localhost:3000/chamados/${id}/prioridade`,
+        `http://localhost:3000/api/chamados/${id}/prioridade`,
 
         {
 
@@ -268,7 +268,7 @@ export default function PainelAdmin() {
 const adminAutoAtribuirChamado = async (chamadoId) => {
     setLoading(true);
     try {
-        const response = await fetch(`http://localhost:3000/chamados/${chamadoId}/admin-atribuir`, {
+        const response = await fetch(`http://localhost:3000/api/chamados/${chamadoId}/admin-atribuir`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

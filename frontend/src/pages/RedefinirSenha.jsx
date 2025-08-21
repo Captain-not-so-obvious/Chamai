@@ -30,7 +30,7 @@ export default function RedefinirSenha() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/auth/redefinir-senha", {
+            const response = await fetch("http://localhost:3000/api/auth/redefinir-senha", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token, novaSenha }),

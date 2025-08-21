@@ -7,9 +7,14 @@ apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
+// =========================================================================
+// PADRONIZAÇÃO: Defina o remetente (sender) uma única vez aqui no topo.
+// =========================================================================
+const sender = { email: process.env.SENDER_EMAIL, name: 'Suporte Chamaí - Não Responder' };
+
 const enviarEmailChamadoResolvido = async (destinatario, nomeSolicitante, tituloChamado) => {
   const sendSmtpEmail = {
-    sender: { email: process.env.SENDER_EMAIL, name: 'Suporte TI - Não Responder' },
+    sender: sender, // Usa a variável global
     to: [{ email: destinatario }],
     subject: `Seu chamado foi resolvido: ${tituloChamado}`,
     htmlContent: `
@@ -23,10 +28,10 @@ const enviarEmailChamadoResolvido = async (destinatario, nomeSolicitante, titulo
 
   try {
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log('E-mail enviado via API Brevo:', data);
+    console.log('E-mail de chamado resolvido enviado via API Brevo:', data);
     return data;
   } catch (error) {
-    console.error('Erro ao enviar e-mail via API Brevo:', error);
+    console.error('Erro ao enviar e-mail de chamado resolvido via API Brevo:', error);
     throw error;
   }
 };
@@ -35,7 +40,7 @@ const enviarEmailRecuperacaoSenha = async (destinatario, token) => {
   const link = `http://localhost:5173/redefinir-senha?token=${token}`;
 
   const sendSmtpEmail = {
-    sender: { email: process.env.SENDER_EMAIL, name: 'Suporte TI - Não Responder' },
+    sender: sender,
     to: [{ email: destinatario }],
     subject: "Recuperação de Senha - Chamaí",
     htmlContent:`
@@ -62,8 +67,8 @@ const enviarEmailRecuperacaoSenha = async (destinatario, token) => {
 const enviarEmailChamadoAberto = async (destinatarioEmail, destinatarioNome, chamadoId, chamadoTitulo) => {
   try {
     const sendSmtpEmail = {
-      sender,
-      to: [{ email: destinatarioEmail }],
+      sender: sender,
+      to: [{ email: destinatarioEmail, name: destinatarioNome }],
       subject: `Chamado #${chamadoId} Aberto: ${chamadoTitulo}`,
       htmlContent: `
       <html>
@@ -73,7 +78,7 @@ const enviarEmailChamadoAberto = async (destinatarioEmail, destinatarioNome, cha
           <p>Detalhes do Chamado:</p>
           <ul>
             <li><strong>ID:</strong> #${chamadoId}</li>
-            <li><strong>Título:</strong> #${chamadoTitulo}</li>
+            <li><strong>Título:</strong> ${chamadoTitulo}</li>
             <li><strong>Status:</strong> Aberto</li>
           </ul>
           <p>Acompanhe o andamento pelo e-mail.</p>
@@ -83,7 +88,7 @@ const enviarEmailChamadoAberto = async (destinatarioEmail, destinatarioNome, cha
       `
     };
     await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log(`E-mail de confirmação de chamado aberto enviado para e-mail cadastrado`);
+    console.log(`E-mail de confirmação de chamado aberto enviado para ${destinatarioEmail}`);
   } catch (error) {
     console.error(`Erro ao enviar e-mail de abertura de chamado`, error);
   }
@@ -92,9 +97,9 @@ const enviarEmailChamadoAberto = async (destinatarioEmail, destinatarioNome, cha
 const enviarEmailChamadoAtualizado = async (destinatarioEmail, destinatarioNome, chamadoId, mensagemAtualizacao) => {
   try {
     const sendSmtpEmail = {
-      sender,
-      to: [{ email: destinatarioEmail }],
-      subject: `Chamado #${chamadoId} Atualizado: ${mensagemAtualizacao}`,
+      sender: sender,
+      to: [{ email: destinatarioEmail, name: destinatarioNome }],
+      subject: `Chamado #${chamadoId} Atualizado`,
       htmlContent: `
       <html>
         <body>
@@ -107,9 +112,9 @@ const enviarEmailChamadoAtualizado = async (destinatarioEmail, destinatarioNome,
       `,
     };
     await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log(`E-mail de atualização do chamado enviado`);
+    console.log(`E-mail de atualização do chamado enviado para ${destinatarioEmail}`);
   } catch (error) {
-    console.error(`Erro ao enviar e-mail de atualização`)
+    console.error(`Erro ao enviar e-mail de atualização`, error)
   }
 };
 

@@ -2,73 +2,68 @@ require("dotenv").config();
 const express = require("express");
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const app = express();
-const db = require("./models/index");
-const { sequelize } = require("./models");
-const chamadoRoutes = require("./routes/chamado.routes");
-const usuarioRoutes = require("./routes/usuario.routes")
-const historicoRoutes = require("./routes/historico.routes");
-const relatorioRoutes = require("./routes/relatorio.routes");
 const path = require('path');
-const { ok } = require("assert");
+const { sequelize } = require("./models"); // Importa apenas o sequelize
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Middlewares
+// =========================================================================
+// MIDDLEWARES ESSENCIAIS
+// =========================================================================
 app.use(cors({
-  origin: 'http://localhost:5173', // Permite requisições do frontend
   credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
 
-// Rotas
-app.use("/usuarios", require("./routes/usuario.routes"));
-app.use("/auth", require("./routes/auth.routes"));
-app.use("/chamados", chamadoRoutes);
-app.use("/historico", historicoRoutes);
-app.use("/relatorios", relatorioRoutes);
+// =========================================================================
+// SERVIR OS ARQUIVOS ESTÁTICOS DO FRONTEND
+// Esta linha deve vir antes de todas as rotas.
+// =========================================================================
+app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
 
-// Conecta e sincroniza o banco
-sequelize.authenticate()
-  .then(() => console.log("Conexão com banco estabelecida com sucesso"))
-  .catch(err => console.error("Erro na conexão com o banco:", err));
+// =========================================================================
+// ROTAS DA API
+// Padronizando: Todas as rotas da API começarão com /api para fácil identificação
+// e para evitar conflitos com as rotas do frontend.
+// =========================================================================
+const usuarioRoutes = require("./routes/usuario.routes");
+const authRoutes = require("./routes/auth.routes");
+const chamadoRoutes = require("./routes/chamado.routes");
+const historicoRoutes = require("./routes/historico.routes");
+const relatorioRoutes = require("./routes/relatorio.routes");
 
-// Middleware para arquivos estáticos
-(function wrapAppMethods() {
-  const origUse = app.use.bind(app);
-  app.use = function (...args) {
-    try {
-      console.log('DEBUG app.use args:', args.map(a => {
-        if (typeof a === 'string') return `STRING:${a}`;
-        if (a && a.stack) return `ERROR_OBJECT`;
-        return a && a.name ? `FUNC:${a.name}` : typeof a;
-      }));
-      return origUse(...args);
-    } catch (err) {
-      console.error('DEBUG app.use failed with args:', args);
-      console.error(err);
-      throw err;
-    }
-  };
+app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/chamados", chamadoRoutes);
+app.use("/api/historico", historicoRoutes);
+app.use("/api/relatorios", relatorioRoutes);
 
-  const origGet = app.get.bind(app);
-  app.get = function (...args) {
-    try {
-      console.log('DEBUG app.get args:', args.map(a => {
-        if (typeof a === 'string') return `STRING:${a}`;
-        return a && a.name ? `FUNC:${a.name}` : typeof a;
-      }));
-      return origGet(...args);
-    } catch (err) {
-      console.error('DEBUG app.get failed with args:', args);
-      console.error(err);
-      throw err;
-    }
-  };
-})();
+// =========================================================================
+// ROTA CORINGA (CATCH-ALL) PARA O FRONTEND
+// Esta deve ser a ÚLTIMA rota. Ela captura qualquer requisição que não seja
+// para a API e devolve o index.html. Isso permite que o React Router
+// (no frontend) controle a navegação.
+// =========================================================================
+app.get('*', (req, res) => {
+  // Se a requisição não for para a API, sirva o app do React.
+  if (!req.path.startsWith('/api/')) {
+    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+  } else {
+    // Se for uma rota /api que não foi encontrada antes, retorna 404.
+    res.status(404).send("Endpoint da API não encontrado");
+  }
+});
 
-app.get('/health', (req, res) => res.json({ ok: true, env: process.env.NODE_ENV || 'dev' }));
-
-// Inicia o servidor
-app.listen(3000, '0.0.0.0', () => {
-  console.log("Servidor rodando na porta 3000");
+// =========================================================================
+// INICIALIZAÇÃO DO SERVIDOR E CONEXÃO COM O BANCO
+// =========================================================================
+app.listen(PORT, '0.0.0.0', async () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+  try {
+    await sequelize.authenticate();
+    console.log("Conexão com o banco de dados estabelecida com sucesso.");
+  } catch (err) {
+    console.error("Erro ao conectar com o banco de dados:", err);
+  }
 });

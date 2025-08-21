@@ -12,7 +12,7 @@ export default function HistoricoChamado({ chamadoId }) {
 
     const carregarHistorico = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/historico/${chamadoId}`, {
+            const res = await fetch(`http://localhost:3000/api/historico/${chamadoId}`, {
                 credentials: "include",
             });
             const data = await res.json();
@@ -28,7 +28,7 @@ export default function HistoricoChamado({ chamadoId }) {
 
     const adicionarComentario = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/historico/${chamadoId}`, {
+            const res = await fetch(`http://localhost:3000/api/historico/${chamadoId}`, {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json",

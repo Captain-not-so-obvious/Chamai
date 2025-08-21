@@ -12,7 +12,7 @@ export default function RecuperarSenha() {
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:3000/auth/recuperar-senha", {
+            const response = await fetch("http://localhost:3000/api/auth/recuperar-senha", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
