@@ -17,7 +17,7 @@ export default function CadastroTecnico() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/usuarios/tecnicos", {
+            const response = await fetch("http://localhost:4000/api/usuarios/tecnicos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

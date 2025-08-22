@@ -14,7 +14,7 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
 
     const buscarUsuarios = async () => {
         try {
-            const res = await fetch("http://localhost:3000/api/usuarios", {
+            const res = await fetch("http://localhost:4000/api/usuarios", {
                 credentials: "include",
             });
             const data = await res.json();
@@ -26,7 +26,7 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
 
     const buscarSetores = async () => {
     try {
-        const res = await fetch("http://localhost:3000/api/chamados/setores", {
+        const res = await fetch("http://localhost:4000/api/chamados/setores", {
             credentials: "include",
         });
         const data = await res.json();
@@ -40,7 +40,7 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
         try {
             setFiltrado(true); // Marca como filtrado ao clicar no botão
 
-            let url = "http://localhost:3000/api/chamados/status/resolvido";
+            let url = "http://localhost:4000/api/chamados/status/resolvido";
             const queryParams = [];
             if (usuarioId) queryParams.push(`usuarioId=${usuarioId}`);
             if (setor) queryParams.push(`setor=${encodeURIComponent(setor)}`);

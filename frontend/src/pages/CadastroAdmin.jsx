@@ -17,7 +17,7 @@ export default function CadastroAdmin() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/usuarios/admin", {
+            const response = await fetch("http://localhost:4000/api/usuarios/admin", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

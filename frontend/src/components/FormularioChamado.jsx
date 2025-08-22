@@ -21,7 +21,7 @@ export default function FormularioChamado() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/chamados", {
+            const response = await fetch("http://localhost:4000/api/chamados", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

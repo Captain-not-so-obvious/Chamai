@@ -37,7 +37,7 @@ versão 1.1
 36 - Toda mudança de status deve ser avisada via e-mail. ( feito )
 37 - O usuário técnico só terá acesso ao chamados que foram direcionados a ele pelo admin ( feito )
 -----versão 1.1 ------
-1 - Link Painel Técnico não funciona
+1 - Link Painel Técnico não funciona quando usuário está fora dele
 2 - Consertar envio de e-mail
 3 - Fazer módulo de solicitação de materiais
 caso de exemplo
@@ -50,3 +50,4 @@ Temos que adicionar nos models de usuário o perfil de compradores além dos já
 4 - Admins devem ser adicionados nos relatórios de tempo médio de resolução de chamados, chamados resolvidos
 5 - Adicionar módulo de SLA para definir e ter uma visualização de quais colaboradores estão saindo fora do prazo definido e em quais fases do chamados isso é mais comum.
 6 - Melhorar sistema via centralização de modelos de API
+7 - Deixar Frontend do painel técnico mais uniforme no painel técnico

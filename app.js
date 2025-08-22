@@ -5,12 +5,13 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const { sequelize } = require("./models"); // Importa apenas o sequelize
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 // =========================================================================
 // MIDDLEWARES ESSENCIAIS
 // =========================================================================
 app.use(cors({
+  origin: 'http://localhost:5173', // URL do frontend, usar em dev
   credentials: true
 }));
 app.use(express.json());

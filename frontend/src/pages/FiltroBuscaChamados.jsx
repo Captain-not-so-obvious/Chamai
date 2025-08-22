@@ -15,7 +15,7 @@ export default function FiltroBuscaChamados() {
 
     const buscarSetores = async () => {
     try {
-        const res = await fetch("http://localhost:3000/api/chamados/setores", {
+        const res = await fetch("http://localhost:4000/api/chamados/setores", {
             credentials: "include",
         });
 
@@ -38,7 +38,7 @@ export default function FiltroBuscaChamados() {
 
     const buscarChamados = async () => {
         try {
-            let url = "http://localhost:3000/api/chamados/filtro-busca";
+            let url = "http://localhost:4000/api/chamados/filtro-busca";
             const params = [];
 
             if (setor) params.push(`setor=${encodeURIComponent(setor)}`);

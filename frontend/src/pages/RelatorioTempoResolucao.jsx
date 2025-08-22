@@ -25,7 +25,7 @@ const RelatorioTempoResolucao = () => {
   const [relatorio, setRelatorio] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/usuarios?tipo=tecnico", {
+    fetch("http://localhost:4000/api/usuarios?tipo=tecnico", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -36,7 +36,7 @@ const RelatorioTempoResolucao = () => {
   const buscarRelatorio = async () => {
     try {
       const params = new URLSearchParams({ tecnicoId, dataInicio, dataFim });
-      const response = await fetch(`http://localhost:3000/api/relatorios/tempo-resolucao?${params}`, {
+      const response = await fetch(`http://localhost:4000/api/relatorios/tempo-resolucao?${params}`, {
         credentials: "include",
       });
 

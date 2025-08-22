@@ -20,7 +20,7 @@ export default function ChamadoCard({
     useEffect(() => {
         // Lógica para buscar técnicos
         if (user && user.tipo === 'admin') {
-            fetch("http://localhost:3000/api/usuarios/tecnicos", { credentials: "include" })
+            fetch("http://localhost:4000/api/usuarios/tecnicos", { credentials: "include" })
                 .then(res => res.json())
                 .then(data => setTecnicos(data))
                 .catch(err => console.error("Erro ao buscar técnicos:", err));

@@ -30,7 +30,7 @@ export default function RedefinirSenha() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/auth/redefinir-senha", {
+            const response = await fetch("http://localhost:4000/api/auth/redefinir-senha", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token, novaSenha }),
@@ -40,7 +40,7 @@ export default function RedefinirSenha() {
 
             if (response.ok) {
                 setMensagem("Senha redefinida com sucesso! Redirecionando para o login...");
-                setTimeout(() => navigate("/login"), 3000);
+                setTimeout(() => navigate("/login"), 4000);
             } else {
                 setMensagem(data.message || "Erro ao redefinir senha.");
             }
