@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import apiFetch from "../services/api";
 import "../styles/RedefinirSenha.css";
 
 export default function RedefinirSenha() {
@@ -24,32 +25,30 @@ export default function RedefinirSenha() {
         e.preventDefault();
         setMensagem("");
 
+        if (!token) {
+            setMensagem("Token não encontrado. Não é possível redefinir a senha.");
+            return;
+        }
+
         if (novaSenha !== confirmarSenha) {
             setMensagem("As senhas não coincidem.");
             return;
         }
 
         try {
-            const response = await fetch("http://localhost:4000/api/auth/redefinir-senha", {
+            const data = await apiFetch("/auth/redefinir-senha", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token, novaSenha }),
+                body: { token, novaSenha },
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setMensagem("Senha redefinida com sucesso! Redirecionando para o login...");
-                setTimeout(() => navigate("/login"), 4000);
-            } else {
-                setMensagem(data.message || "Erro ao redefinir senha.");
-            }
+            setMensagem(data.message || "Senha redefinida! Redirecionando para o login...");
+            setTimeout(() => navigate("/login"), 3000); // Redireciona após 3 segundos
         } catch (error) {
-                console.error("Erro ao redefinir senha:", error);
-                setMensagem("Erro de conexão com o servidor.");
+            console.error("Erro ao redefinir senha:", error);
+            setMensagem(error.message || "Erro de conexão com o servidor.");
         }
     };
-
+    
     return (
         <div className="redefine-container">
             <form className="redefine-form" onSubmit={handleSubmit}>

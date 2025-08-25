@@ -36,9 +36,11 @@ versão 1.1
 35 - Chamado terá quatro status - enviado (quando o chamado só foi enviado e está no painel), aguardando status (antes de ser atribuído a um técnico), em_atendimento(quando o técnico pegar o chamado pra resolver) concluído quando for finalizado. ( feito )
 36 - Toda mudança de status deve ser avisada via e-mail. ( feito )
 37 - O usuário técnico só terá acesso ao chamados que foram direcionados a ele pelo admin ( feito )
+
 -----versão 1.1 ------
-1 - Link Painel Técnico não funciona quando usuário está fora dele
-2 - Consertar envio de e-mail
+
+1 - Link Painel Técnico não funciona quando usuário está fora dele (feito)
+2 - Consertar envio de e-mail (feito)
 3 - Fazer módulo de solicitação de materiais
 caso de exemplo
 técnico vai até o ambiente de trabalho e percebe a necessidade de fazer uma solicitação de material, então ele clica em um botão que será disponibilizado no painel técnico e abrirá uma tela para ele descrever quantidade a ser comprada e o material que será enviado ao comprador via e-mail. O comprador terá uma tela similar ao do técnico onde ele terá acesso apenas as solicitações de materiais feita por técnicos e adminis e terá acesso a recursos parecidos como iniciar cotação onde a cotação terá os seguintes status(enviada, aberta, aguardando_autorização, autorizada) as cotações terão estes status quando:
@@ -47,7 +49,9 @@ aberta - quando o comprador pega a cotação pra fazer e conta o tempo dele pra 
 aguardando_autorização - finaliza o tempo para fazer a cotação e troca o status, cotação fica esperando autorização da diretoria e inicia novo timer com a troca do status
 autorizada - diretor autoriza a cotação e a cotação é finalizada, disparando e-mail para o técnico responsável
 Temos que adicionar nos models de usuário o perfil de compradores além dos já existentes (admin, técnicos e usuários) e lógicas similares as dos chamados para cotação aonde eu inicio e termino a cotação - devo decidir se o usuário comprador vai inputar os valores e fornecedores no sistema, caso sim, a exportação em formato de Excel é obrigatória de acordo com moldes já utilizados.
-4 - Admins devem ser adicionados nos relatórios de tempo médio de resolução de chamados, chamados resolvidos
+4 - Admins devem ser adicionados nos filtros de relatórios de tempo médio de resolução de chamados, chamados resolvidos
 5 - Adicionar módulo de SLA para definir e ter uma visualização de quais colaboradores estão saindo fora do prazo definido e em quais fases do chamados isso é mais comum.
-6 - Melhorar sistema via centralização de modelos de API
-7 - Deixar Frontend do painel técnico mais uniforme no painel técnico
+6 - Melhorar sistema via centralização de modelos de API (feito)
+7 - Deixar Frontend do painel técnico mais uniforme no painel técnico de acordo com  a estilização do sistema.
+9 - Enviar e-mail quando o admin pegar o chamado pra resolver também
+10 - Deixar sistema responsivo para aparelhos móveis

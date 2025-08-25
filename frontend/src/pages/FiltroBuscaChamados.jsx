@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import apiFetch from "../services/api";
 import "../styles/FiltroBuscaChamados.css";
 
 export default function FiltroBuscaChamados() {
@@ -8,56 +9,45 @@ export default function FiltroBuscaChamados() {
     const [status, setStatus] = useState("");
     const [setor, setSetor] = useState("");
     const [termo, setTermo] = useState("");
+    const [mensagem, setMensagem] = useState(""); // Estado para mensagens de erro ou sucesso
 
     useEffect(() => {
         buscarSetores();
     }, []);
 
     const buscarSetores = async () => {
-    try {
-        const res = await fetch("http://localhost:4000/api/chamados/setores", {
-            credentials: "include",
-        });
-
-        if (!res.ok) {
-            throw new Error(`Erro na API: ${res.status}`);
+        try {
+            const data = await apiFetch("/chamados/setores");
+            if (Array.isArray(data)) {
+                setSetores(data);
+            } else {
+                throw new Error("Formato de resposta inválido para setores.");
+            }
+        } catch (error) {
+            console.error("Erro ao buscar setores:", error.message);
+            setMensagem(error.message);
+            setSetores([]); // Limpa os setores em caso de erro
         }
-
-        const data = await res.json();
-
-        if (!Array.isArray(data)) {
-            throw new Error("Formato de resposta inválido. Esperado um array.");
-        }
-
-        setSetores(data);
-    } catch (error) {
-        console.error("Erro ao buscar setores:", error);
-        setSetores([]);  // Pra garantir que o map não quebre
-    }
-};
+    };
 
     const buscarChamados = async () => {
+        setMensagem(""); // Limpa mensagens anteriores
         try {
-            let url = "http://localhost:4000/api/chamados/filtro-busca";
-            const params = [];
+            const params = new URLSearchParams();
+            if (setor) params.append("setor", setor);
+            if (prioridade) params.append("prioridade", prioridade);
+            if (status) params.append("status", status);
+            if (termo) params.append("termo", termo);
 
-            if (setor) params.push(`setor=${encodeURIComponent(setor)}`);
-            if (prioridade) params.push(`prioridade=${encodeURIComponent(prioridade)}`);
-            if (status) params.push(`status=${encodeURIComponent(status)}`);
-            if (termo) params.push(`termo=${encodeURIComponent(termo)}`);
+            const queryString = params.toString();
+            const endpoint = `/chamados/filtro-busca${queryString ? `?${queryString}` : ''}`;
 
-            if (params.length > 0) {
-                url += `?${params.join("&")}`;
-            }
-
-            const res = await fetch(url, {
-                credentials: "include",
-            });
-
-            const data = await res.json();
+            const data = await apiFetch(endpoint);
             setChamados(data);
         } catch (error) {
-            console.error("Erro ao buscar chamados:", error);
+            console.error("Erro ao buscar chamados:", error.message);
+            setMensagem(error.message);
+            setChamados([]); // Limpa os chamados em caso de erro
         }
     };
 

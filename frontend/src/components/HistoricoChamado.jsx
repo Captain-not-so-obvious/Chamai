@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import apiFetch from "../services/api";
 import "../styles/HistoricoChamado.css"
 
 export default function HistoricoChamado({ chamadoId }) {
@@ -11,41 +12,34 @@ export default function HistoricoChamado({ chamadoId }) {
     }, [chamadoId]);
 
     const carregarHistorico = async () => {
+        setCarregando(true);
         try {
-            const res = await fetch(`http://localhost:4000/api/historico/${chamadoId}`, {
-                credentials: "include",
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setHistorico(data);
-            } else {
-                setMensagem(data.message || "Nenhum histórico encontrado");
-            }
-        } catch (err) {
-            setMensagem("Erro ao buscar histórico.");
+            const data = await apiFetch(`/historico/${chamadoId}`);
+            setHistorico(data);
+            setMensagem("");
+        } catch (error) {
+            setMensagem(err.message || "Erro ao buscar histórico.");
+        } finally {
+            setcarregando(false);
         }
     };
 
     const adicionarComentario = async () => {
+        if (!novoComentario.trim()) {
+            setMensagem("O comentário não pode estar vazio.");
+            return;
+        }
+
         try {
-            const res = await fetch(`http://localhost:4000/api/historico/${chamadoId}`, {
+            await apiFetch(`/historico/${chamadoId}`, {
                 method: "POST",
-                headers: {
-                    "Content-type": "application/json",
-                },
-                body: JSON.stringify({ descricao: novoComentario }),
-                credentials: "include",
+                body: { descricao: novoComentario },
             });
 
-            if (res.ok) {
-                setNovoComentario("");
-                await carregarHistorico();
-            } else {
-                const erro = await res.json();
-                setMensagem(erro.message || "Erro ao adicionar comentário.");
-            }
+            setNovoComentario(""); // Limpa o campo de texto
+            await carregarHistorico(); // Recarrega o histórico
         } catch (err) {
-            setMensagem("Erro ao adicionar comentário.");
+            setMensagem(err.message || "Erro ao adicionar comentário.");
         }
     };
 
@@ -59,7 +53,7 @@ export default function HistoricoChamado({ chamadoId }) {
                         <strong>{h.Usuario?.nome || "Autor desconhecido"}:</strong> {h.descricao}
                         <br />
                         <small>
-                            {new Date(h.dataEvento || h.createdAt).toLocaleString()}
+                            {new Date(h.dataEvento || h.createdAt).toLocaleString('pt-BR')}
                         </small>
                     </li>
                 ))}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ChamadoCard from "../components/ChamadoCard";
 import { useAuth } from "../context/AuthContext";
+import apiFetch from "../services/api";
 import "../styles/PainelTecnico.css";
 
 
@@ -10,7 +11,7 @@ export default function PainelAdmin() {
     const [setorFiltro, setSetorFiltro] = useState('');
     const [prioridadeFiltro, setPrioridadeFiltro] = useState('');
     const [statusFiltro, setStatusFiltro] = useState('');
-    const [loading, setLoading] = useState(false); // Corrigido
+    const [loading, setLoading] = useState(false);
 
     const { user } = useAuth();
 
@@ -24,25 +25,13 @@ export default function PainelAdmin() {
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:4000/api/chamados?status_ne=resolvido", {
-                credentials: "include",
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: "Erro Desconhecido" }));
-                setMensagem(errorData.message || "Erro ao carregar chamados.");
-                setChamados([]);
-                return;
-            }
-
-            const data = await response.json();
+            const data = await apiFetch("/chamados?status_ne=resolvido");
             setChamados(data);
             if (data.length === 0) {
-                setMensagem("Nenhum chamado encontrado.");
+                setMensagem("Nenhum chamado ativo encontrado");
             }
         } catch (error) {
-            console.error("Erro ao carregar chamados:", error);
-            setMensagem("Erro de conexão ao carregar chamados.");
+            setMensagem(error.message || "Erro ao carregar chamados");
             setChamados([]);
         } finally {
             setLoading(false);
@@ -50,37 +39,23 @@ export default function PainelAdmin() {
     };
 
 
-    const buscarChamadosComFiltros = async () => {
+    const buscarChamadosComFiltros = async () => {
         setLoading(true);
-
+        setMensagem("");
         try {
             const params = new URLSearchParams();
-
             if (setorFiltro) params.append("setor", setorFiltro);
             if (prioridadeFiltro) params.append("prioridade", prioridadeFiltro);
             if (statusFiltro) params.append("status", statusFiltro);
-            
-            const response = await fetch(`http://localhost:4000/api/chamados/filtro-busca?${params.toString()}`, {
-                credentials: "include",
-            });
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: "Erro desconhecido" }));
-                setMensagem(errorData.message || "Erro ao buscar chamados com filtros.");
-                setChamados([]);
-                return;
-            }
-
-            const data = await response.json();
+            const endpoint = `/chamados/filtro-busca?${params.toString()}`;
+            const data = await apiFetch(endpoint);
             setChamados(data);
             if (data.length === 0) {
                 setMensagem("Nenhum chamado encontrado com os filtros aplicados.");
-            } else {
-                setMensagem("");
             }
         } catch (error) {
-            console.error("Erro ao buscar chamados com filtros:", error);
-            setMensagem("Erro de conexão ao buscar chamados com filtros.");
+            setMensagem(error.message || "Erro ao buscar chamados com filtros");
             setChamados([]);
         } finally {
             setLoading(false);
@@ -88,206 +63,52 @@ export default function PainelAdmin() {
     };
 
     const direcionarChamado = async (chamadoId, tecnicoId) => {
+        try {
+            await apiFetch(`/chamados/${chamadoId}/direcionar`, {
+                method: "PUT",
+                body: { tecnicoId },
+            });
+            alert("Chamado direcionado com sucesso!");
+            carregarTodosChamados();
+        } catch (error) {
+            setMensagem(error.message || "Erro ao direcionar chamado.");
+        }
+    };
+
+    const resolverChamado = async (id) => {
+        try {
+            await apiFetch(`/chamados/${id}/resolver`, { method: "PUT" });
+            carregarTodosChamados();
+        } catch (error) {
+            setMensagem(error.message || "Erro ao resolver chamado.");
+        }
+    };
+
+    const alterarPrioridade = async (id, novaPrioridade) => {
+        try {
+            await apiFetch(`/chamados/${id}/prioridade`, {
+                method: "PUT",
+                body: { prioridade: novaPrioridade },
+            });
+            alert("Prioridade alterada com sucesso!");
+            carregarTodosChamados();
+        } catch (error) {
+            alert(error.message || "Erro ao atualizar a prioridade");
+        }
+    };
+
+    const adminAutoAtribuirChamado = async (chamadoId) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:4000/api/chamados/${chamadoId}/direcionar`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ tecnicoId }),
-                credentials: "include",
-            });
-
-            if (response.ok) {
-                alert("Chamado direcionado com sucesso!");
-                carregarTodosChamados();
-            } else {
-                const data = await response.json();
-                setMensagem(data.message || "Erro ao direcionar o chamado.");
-            }
+            await apiFetch(`/chamados/${chamadoId}/admin-atribuir`, { method: "PUT" });
+            alert("Chamado iniciado!");
+            carregarTodosChamados();
         } catch (error) {
-            console.error("Erro ao direcionar o chamado:", error);
-            setMensagem("Erro de conexão ao direcionar o chamado.");
+            setMensagem(error.message || "Erro ao iniciar chamado");
         } finally {
             setLoading(false);
         }
     };
-
-
-      const atribuirChamado = async (id) => {
-
-    if (!user || !user.id) {
-
-        setMensagem("Erro: ID do técnico não disponível para atribuição.");
-
-        return;
-
-    }
-
-    const tecnicoId = user.id; // ⬅️ Pegando o ID do usuário logado do contexto
-
-
-
-    try {
-
-        const response = await fetch(`http://localhost:4000/api/chamados/${id}/atribuir`, {
-
-            method: "PUT",
-
-            headers: {
-
-                "Content-Type": "application/json",
-
-            },
-
-            body: JSON.stringify({ tecnicoId }),
-
-            credentials: "include",
-
-        });
-
-
-
-        if (response.ok) {
-
-            await carregarTodosChamados(); // Recarrega os chamados após atribuição
-
-        } else {
-
-            const data = await response.json();
-
-            setMensagem(data.message || "Erro ao atribuir chamado.");
-
-        }
-
-    } catch (error) {
-
-        console.error("Erro ao atribuir chamado:", error);
-
-        setMensagem("Erro de conexão ao atribuir chamado.");
-
-    }
-
-  };
-
-
-
-    const resolverChamado = async (id) => {
-
-    try {
-
-        const response = await fetch(`http://localhost:4000/api/chamados/${id}/resolver`, {
-
-            method: "PUT",
-
-            headers: {
-
-            },
-
-            credentials: "include",
-
-        });
-
-
-
-        if (response.ok) {
-
-            await carregarTodosChamados(); // Recarrega os chamados após resolver
-
-        } else {
-
-            const data = await response.json();
-
-            setMensagem(data.message || "Erro ao resolver chamado.");
-
-        }
-
-    } catch (error) {
-
-        console.error("Erro ao resolver chamado:", error);
-
-        setMensagem("Erro de conexão ao resolver chamado.");
-
-    }
-
-  };
-
-
-
-    const alterarPrioridade = async (id, novaPrioridade) => {
-
-
-
-    try {
-
-      const response = await fetch(
-
-        `http://localhost:4000/api/chamados/${id}/prioridade`,
-
-        {
-
-          method: "PUT",
-
-          headers: {
-
-            "Content-Type": "application/json",
-
-          },
-
-          body: JSON.stringify({ prioridade: novaPrioridade }),
-
-          credentials: "include",
-
-        }
-
-      );
-
-
-
-      if (response.ok) {
-
-        alert("Prioridade alterada!");
-
-        await carregarTodosChamados(); // Recarrega os chamados
-
-      } else {
-
-        const data = await response.json();
-
-        alert(data.message || "Erro ao atualizar a prioridade!");
-
-      }
-
-    } catch (error) {
-
-      console.error("Erro ao alterar prioridade:", error);
-
-    }
-
-  };
-
-const adminAutoAtribuirChamado = async (chamadoId) => {
-    setLoading(true);
-    try {
-        const response = await fetch(`http://localhost:4000/api/chamados/${chamadoId}/admin-atribuir`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-        });
-
-        if (response.ok) {
-            alert("Chamado Iniciado!");
-            carregarTodosChamados();
-        } else {
-            const data = await response.json();
-            setMensagem(data.message || "Erro ao iniciar chamado");
-        }
-    } catch (error) {
-        console.error("Erro ao iniciar o chamado:", error);
-        setMensagem("Erro de conexão ao se atribuir ao chamado.");
-    } finally {
-        setLoading(false);
-    }
-};
 
 
 
@@ -383,7 +204,6 @@ const adminAutoAtribuirChamado = async (chamadoId) => {
                 <ChamadoCard
                     key={chamado.id}
                     chamado={chamado}
-                    onAtribuir={atribuirChamado}
                     onResolver={resolverChamado}
                     onAlterarPrioridade={alterarPrioridade}
                     onDirecionar={direcionarChamado}

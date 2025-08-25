@@ -1,4 +1,5 @@
 import { useState } from "react";
+import apiFetch from "../services/api";
 import "../styles/CadastroTecnico.css";
 
 export default function CadastroTecnico() {
@@ -10,6 +11,7 @@ export default function CadastroTecnico() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMensagem("");
 
         if (senha !== confirmarSenha) {
             setMensagem("As senhas não são iguais. Por favor, verifique.");
@@ -17,28 +19,19 @@ export default function CadastroTecnico() {
         }
 
         try {
-            const response = await fetch("http://localhost:4000/api/usuarios/tecnicos", {
+            const data = await apiFetch("/usuarios/tecnicos", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ nome, email, senha }),
-                credentials: "include",
+                body: { nome, email, senha },
             });
 
-            if (response.ok) {
-                setMensagem("Técnico cadastrado com sucesso!");
-                setNome("");
-                setEmail("");
-                setSenha("");
-                setConfirmarSenha("");
-            } else {
-                const data = await response.json();
-                setMensagem(data.mensagem || "Erro ao cadastrar técnico.");
-            }
+            setMensagem(data.mensagem || "Técnico cadastrado com sucesso!");
+            setNome("");
+            setEmail("");
+            setSenha("");
+            setConfirmarSenha("");
         } catch (error) {
             console.error("Erro ao cadastrar técnico:", error);
-            setMensagem("Erro de conexão.");
+            setMensagem(error.message || "Erro de conexão");
         }
     };
 

@@ -2,6 +2,7 @@ import logo from "../assets/logo.png"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import apiFetch from "../services/api";
 import "../styles/Login.css";
 
 export default function Login() {
@@ -16,26 +17,15 @@ export default function Login() {
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:4000/api/auth/login", {
+            const data = await apiFetch("/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, senha }),
-                credentials: "include", // Inclui cookies na requisição
+                body: { email, senha },
             });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                authLogin(data.user);
-                navigate("/dashboard");
-            } else {
-                setMensagem(data.message || "Usuário ou senha inválidos.");
-            }
+            authLogin(data.user);
+            navigate("/dashboard");
         } catch (error) {
-            console.error("Erro ao fazer login:", error);
-            setMensagem("Erro de conexão com o servidor.");
+            console.error("Erro ao fazer login:", error.message);
+            setMensagem(error.message || "Usuário e senha inválidos ou erro de conexão.");
         }
     };
 

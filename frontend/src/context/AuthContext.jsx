@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, useEffect, Children } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import apiFetch from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -7,31 +8,21 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        checkAuthStatus();
+    }, []);
+
     const checkAuthStatus = async () => {
         try {
-            const response = await fetch("http://localhost:4000/api/auth/me", {
-                method: "GET",
-                credentials: "include",
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setUser(data.user);
-            } else {
-                setUser(null);
-            }
+            const data = await apiFetch('/auth/me');
+            setUser(data.user);
         } catch (error) {
-            console.error("Erro ao verificar status de autenticação:", error);
+            console.error("Sessão não encontrada ou expirada.");
             setUser(null);
         } finally {
             setLoading(false);
         }
     };
-
-    // No carregamento inicial, tenta verificar se o usuário já está autenticado
-    useEffect(() => {
-        checkAuthStatus();
-    }, []);
 
     // Função para fazer login e atualizar o contexto
     const login = (userData) => {
@@ -41,13 +32,12 @@ export const AuthProvider = ({ children }) => {
     // Função para fazer logout
     const logout = async () => {
         try {
-            await fetch("http://localhost:4000/api/auth/logout", {
-                method: "POST",
-                credentials: "include",
+            await apiFetch('/auth/logout', {
+                method: 'POST',
             });
-            setUser(null); // Limpa o estado do usuário
+            setUser(null);
         } catch (error) {
-            console.error("Erro ao fazer logout:", error);
+            console.error("Erro ao fazer logout:", error.message);
             setUser(null);
         }
     };

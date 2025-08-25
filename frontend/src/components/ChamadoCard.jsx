@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import HistoricoChamado from "./HistoricoChamado";
 import { useAuth } from "../context/AuthContext";
+import apiFetch from "../services/api";
 import "../styles/ChamadoCard.css";
 
 export default function ChamadoCard({ 
@@ -17,13 +18,19 @@ export default function ChamadoCard({
     const [tecnicoSelecionado, setTecnicoSelecionado] = useState('');
     const { user } = useAuth();
 
-    useEffect(() => {
+        useEffect(() => {
         // Lógica para buscar técnicos
+        const buscarTecnicos = async () => {
+            try {
+                const data = await apiFetch("/usuarios/tecnicos");
+                setTecnicos(data);
+            } catch (error) {
+                console.error("Erro ao buscar técnicos:", error.message);
+            }
+        };
+
         if (user && user.tipo === 'admin') {
-            fetch("http://localhost:4000/api/usuarios/tecnicos", { credentials: "include" })
-                .then(res => res.json())
-                .then(data => setTecnicos(data))
-                .catch(err => console.error("Erro ao buscar técnicos:", err));
+            buscarTecnicos();
         }
     }, [user]);
 
