@@ -16,7 +16,7 @@ export default function Login() {
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:3000/auth/login", {
+            const response = await fetch("http://192.168.0.179:3000/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

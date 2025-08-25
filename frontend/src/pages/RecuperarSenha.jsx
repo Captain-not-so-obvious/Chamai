@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import apiFetch from "../services/api";
 import "../styles/RecuperarSenha.css";
 
 export default function RecuperarSenha() {
@@ -12,22 +13,15 @@ export default function RecuperarSenha() {
         setMensagem("");
 
         try {
-            const response = await fetch("http://localhost:3000/auth/recuperar-senha", {
+            const data = await apiFetch("/auth/recuperar-senha", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+                body: { email },
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setMensagem("E-mail de recuperação enviado! Verifique sua caixa de entrada.");
-            } else {
-                setMensagem(data.message || "Erro ao enviar e-mail de recuperação.");
-            }
+            setMensagem(data.message || "E-mail de recuperação enviado! Verifique sua caixa de entrada.");
         } catch (error) {
             console.error("Erro ao recuperar senha:", error);
-            setMensagem("Erro de conexão com o servidor.");
+            setMensagem(error.message || "Erro de conexão com o servidor.");
         }
     };
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
+import apiFetch from "../services/api";
 import "../styles/global.css";
 
 export default function FormularioChamado() {
@@ -21,37 +22,31 @@ export default function FormularioChamado() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/chamados", {
+            const data = await apiFetch("/chamados", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
+                body: {
                     solicitanteNome: nome,
                     solicitanteEmail: email,
                     titulo,
                     descricao,
                     prioridade,
                     setor,
-                }),
+                },
             });
 
-            const data = await response.json();
+            const idChamado = data.chamado.id;
+            const dataAbertura = new Date(data.chamado.dataAbertura).toLocaleDateString("pt-BR");
+            setMensagem(`Chamado #${idChamado} aberto com sucesso em ${dataAbertura}.`);
 
-            if (response.ok) {
-                const idChamado = data.chamado.id;
-                const dataAbertura = new Date(data.chamado.dataAbertura).toLocaleDateString("pt-BR");
-                setMensagem(`Chamado #${idChamado} enviado com sucesso! Chamado Aberto em ${dataAbertura}.`);
-                setNome("");
-                setEmail("");
-                setTitulo("");
-                setDescricao("");
-                setPrioridade("");
-            } else {
-                setMensagem(data.message || "Erro ao enviar chamado.");
-            }
+            // Limpa o formulário
+            setNome("");
+            setEmail("");
+            setTitulo("");
+            setDescricao("");
+            setPrioridade("");
+            setSetor("");
         } catch (error) {
-            setMensagem("Erro de conexão com o servidor.");
+            setMensagem(error.message || "Erro de conexão com o servidor.");
         }
     };
 

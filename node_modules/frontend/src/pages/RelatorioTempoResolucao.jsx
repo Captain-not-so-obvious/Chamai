@@ -13,6 +13,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import apiFetch from "../services/api";
 import "../styles/RelatorioTempoResolucao.css";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -23,70 +24,76 @@ const RelatorioTempoResolucao = () => {
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
   const [relatorio, setRelatorio] = useState([]);
+  const [mensagem, setMensagem] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/usuarios?tipo=tecnico", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(setTecnicos)
-      .catch((err) => console.error("Erro ao buscar técnicos:", err));
+    // Busca a lista de técnicos para popular o filtro
+    const buscarTecnicos = async () => {
+      try {
+        const data = await apiFetch("/usuarios?tipo=tecnico");
+        setTecnicos(data);
+      } catch (error) {
+        console.error("Erro ao buscar técnicos:", error);
+        setMensagem(error.message || "Não foi possível carregar a lista de técnicos.");
+      }
+    };
+    buscarTecnicos();
   }, []);
 
   const buscarRelatorio = async () => {
+    setMensagem("");
     try {
-      const params = new URLSearchParams({ tecnicoId, dataInicio, dataFim });
-      const response = await fetch(`http://localhost:3000/relatorios/tempo-resolucao?${params}`, {
-        credentials: "include",
-      });
+      // 2. Usamos URLSearchParams para construir a query de forma segura
+      const params = new URLSearchParams();
+      if (tecnicoId) params.append('tecnicoId', tecnicoId);
+      if (dataInicio) params.append('dataInicio', dataInicio);
+      if (dataFim) params.append('dataFim', dataFim);
 
-      if (!response.ok) {
-        const err = await response.json();
-        alert(err.msg || "Erro ao buscar relatório.");
-        return;
-      }
-
-      const data = await response.json();
+      const endpoint = `/relatorios/tempo-resolucao?${params.toString()}`;
+      
+      const data = await apiFetch(endpoint);
       setRelatorio(Array.isArray(data) ? data : []);
+      if (data.length === 0) {
+        setMensagem("Nenhum dado encontrado para os filtros selecionados.");
+      }
     } catch (error) {
       console.error("Erro ao buscar relatório:", error);
-      alert("Erro ao buscar relatório.");
+      setMensagem(error.message || "Erro ao buscar relatório.");
+      setRelatorio([]);
     }
   };
 
-const exportarPDF = () => {
-  const doc = new jsPDF();
-  autoTable(doc, {
-    startY: 20,
-    head: [["Técnico", "Chamados Resolvidos", "Média de Resolução (horas)"]],
-    body: relatorio.map((r) => [
-      r.tecnico,
-      r.chamadosResolvidos,
-      r.mediaResolucaoHoras !== null
-        ? Number(r.mediaResolucaoHoras).toFixed(2)
-        : "-",
-    ]),
-  });
-  doc.save("relatorio_tempo_resolucao.pdf");
-};
+  const exportarPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Relatório de Tempo Médio de Resolução", 14, 15);
+    autoTable(doc, {
+      startY: 20,
+      head: [["Técnico", "Chamados Resolvidos", "Média de Resolução (horas)"]],
+      body: relatorio.map((r) => [
+        r.tecnico,
+        r.chamadosResolvidos,
+        r.mediaResolucaoHoras !== null ? Number(r.mediaResolucaoHoras).toFixed(2) : "-",
+      ]),
+      headStyles: { fillColor: [41, 128, 185] },
+    });
+    doc.save("relatorio_tempo_resolucao.pdf");
+  };
 
-const exportarExcel = () => {
-  const worksheetData = relatorio.map((r) => ({
-    Técnico: r.tecnico,
-    "Chamados Resolvidos": r.chamadosResolvidos,
-    "Média de Resolução (horas)": r.mediaResolucaoHoras !== null
-    ? Number(r.mediaResolucaoHoras).toFixed(2)
-    : "-",
-  }));
+  const exportarExcel = () => {
+    const worksheetData = relatorio.map((r) => ({
+      'Técnico': r.tecnico,
+      'Chamados Resolvidos': r.chamadosResolvidos,
+      'Média de Resolução (horas)': r.mediaResolucaoHoras !== null ? Number(r.mediaResolucaoHoras).toFixed(2) : "-",
+    }));
 
-  const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
 
-  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-  const blob = new Blob([excelBuffer], {type: "application/octet-stream"});
-  saveAs(blob, "relatorio_tempo_resolucao.xlsx");
-};
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "relatorio_tempo_resolucao.xlsx");
+  };
 
   const chartData = {
     labels: relatorio.map((r) => r.tecnico),

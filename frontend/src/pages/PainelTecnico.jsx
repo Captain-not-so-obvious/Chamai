@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ChamadoCard from "../components/ChamadoCard";
 import { useAuth } from "../context/AuthContext";
+import apiFetch from "../services/api";
 import "../styles/PainelTecnico.css";
 
 export default function PainelTecnico() {
@@ -9,86 +10,52 @@ export default function PainelTecnico() {
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
 
+ const carregarMeusChamados = useCallback(async () => {
+        setLoading(true);
+        setMensagem("");
+        try {
+            // 2. Usamos o apiFetch para carregar os chamados do técnico
+            const data = await apiFetch("/chamados/meus-chamados");
+            setChamados(data);
+            if (data.length === 0) {
+                setMensagem("Nenhum chamado direcionado a você ou em atendimento.");
+            }
+        } catch (error) {
+            setMensagem(error.message || "Erro ao carregar seus chamados.");
+            setChamados([]);
+        } finally {
+            setLoading(false);
+        }
+    }, []); // A função só será recriada se 'user' mudar
+
     useEffect(() => {
         if (user && user.id) {
             carregarMeusChamados();
         } else if (!user) {
             setMensagem("Usuário não autenticado. Por favor, faça login.");
         }
-    }, [user]);
+    }, [user, carregarMeusChamados]);
 
-    const carregarMeusChamados = async () => {
+    const tecnicoAceitarChamadoHandler = async (chamadoId) => {
         setLoading(true);
-        setMensagem("");
-
         try {
-            const response = await fetch("http://localhost:3000/chamados/meus-chamados", {
-                credentials: "include",
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: "Erro Desconhecido" }));
-                setMensagem(errorData.message || "Erro ao carregar chamados.");
-                setChamados([]);
-                return;
-            }
-
-            const data = await response.json();
-            setChamados(data);
-            if (data.length === 0) {
-                setMensagem("Nenhum chamado direcionado a você ou em atendimento.");
-            }
+            await apiFetch(`/chamados/${chamadoId}/aceitar`, {method: "PUT"});
+            alert("Chamado iniciado!");
+            carregarMeusChamados(); // Recarrega os chamados após aceitar
         } catch (error) {
-            console.error("Erro ao carregar chamados:", error);
-            setMensagem("Erro de conexão ao carregar chamados.");
-            setChamados([]);
+            setMensagem(error.message || "Erro ao iniciar o chamado.");
         } finally {
             setLoading(false);
         }
     };
-
-    const tecnicoAceitarChamadoHandler = async (chamadoId) => {
-        setLoading(true);
-    try {
-        const response = await fetch(`http://localhost:3000/chamados/${chamadoId}/aceitar`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-        });
-
-        if (response.ok) {
-            alert("Chamado Iniciado!");
-            carregarMeusChamados();
-        } else {
-            const data = await response.json();
-            setMensagem(data.message || "Erro ao iniciar chamado");
-        }
-    } catch (error) {
-        console.error("Erro ao iniciar o chamado:", error);
-        setMensagem("Erro de conexão ao se atribuir ao chamado.");
-    } finally {
-        setLoading(false);
-    }
-};
     
 
     const resolverChamado = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/chamados/${id}/resolver`, {
-                method: "PUT",
-                headers: {},
-                credentials: "include",
-            });
-
-            if (response.ok) {
-                await carregarMeusChamados();
-            } else {
-                const data = await response.json();
-                setMensagem(data.message || "Erro ao resolver chamado.");
-            }
+            await apiFetch(`/chamados/${id}/resolver`, {method: "PUT"});
+            carregarMeusChamados(); // Recarrega os chamados após resolver
         } catch (error) {
-            console.error("Erro ao resolver chamado", error);
-            setMensagem("Erro de conexão ao resolver chamado.");
+            setMensagem(error.message || "Erro ao resolver o chamado.");
         }
     };
 

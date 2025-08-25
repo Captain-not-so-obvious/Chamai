@@ -20,7 +20,7 @@ export default function Sidebar() {
             <nav>
                 <ul>
                     {user && (user.tipo === 'tecnico' || user.tipo === 'admin') && (
-                    <li><NavLink to="/painel-tecnico">📋 Painel Técnico</NavLink></li>
+                    <li><NavLink to="/painel-admin">📋 Painel Técnico</NavLink></li>
                     )}
 
                     {user && user.tipo === 'admin' && (

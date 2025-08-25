@@ -1,4 +1,5 @@
 import { useState } from "react";
+import apiFetch from "../services/api";
 import "../styles/CadastroTecnico.css";
 
 export default function CadastroAdmin() {
@@ -10,6 +11,7 @@ export default function CadastroAdmin() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMensagem("");
 
         if (senha !== confirmarSenha) {
             setMensagem("As senhas não são iguais.");
@@ -17,28 +19,19 @@ export default function CadastroAdmin() {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/usuarios/admins", {
+            const data = await apiFetch("/usuarios/admin", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ nome, email, senha }),
-                credentials: "include",
+                body: { nome, email, senha },
             });
 
-            if (!response.ok) {
-                setMensagem("Administrador cadastrado com sucesso!");
-                setNome("");
-                setEmail("");
-                setSenha("");
-                setConfirmarSenha("");
-            } else {
-                const data = await response.json();
-                setMensagem(data.mensagem || "Erro ao cadastrar técnico administrador.");
-            }
+            setMensagem(data.mensagem || "Administrador cadastrado com sucesso!");
+            setNome("");
+            setEmail("");
+            setSenha("");
+            setConfirmarSenha("");
         } catch (error) {
-            console.error("Erro ao cadastrar técnico administrador:", error);
-            setMensagem("Erro de conexão");
+            console.error("Erro ao cadastrar administrador:", error);
+            setMensagem(error.message || "Erro de conexão");
         }
     };
 

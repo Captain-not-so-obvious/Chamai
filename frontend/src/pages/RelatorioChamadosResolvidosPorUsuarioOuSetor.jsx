@@ -1,6 +1,7 @@
 import jsPDF from "jspdf";
-import autotable, { autoTable } from "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 import { useEffect, useState } from "react";
+import apiFetch from "../services/api";
 import "../styles/RelatorioResolvidosPorUsuarioOuSetor.css";
 
 export default function RelatorioResolvidosPorUsuarioOuSetor() {
@@ -9,55 +10,46 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
     const [setor, setSetor] = useState("");
     const [usuarios, setUsuarios] = useState([]);
     const [setores, setSetores] = useState([]);
-    const [filtrado, setFiltrado] = useState(false); // Novo estado
+    const [filtrado, setFiltrado] = useState(false);
+    const [mensagem, setMensagem] = useState("");
 
 
-    const buscarUsuarios = async () => {
-        try {
-            const res = await fetch("http://localhost:3000/usuarios", {
-                credentials: "include",
-            });
-            const data = await res.json();
-            setUsuarios(data);
-        } catch (error) {
-            console.error("Erro ao buscar usuários:", error);
-        }
-    };
-
-    const buscarSetores = async () => {
-    try {
-        const res = await fetch("http://localhost:3000/chamados/setores", {
-            credentials: "include",
-        });
-        const data = await res.json();
-        setSetores(data); // Agora pega direto os setores dos chamados
-    } catch (error) {
-        console.error("Erro ao buscar setores dos chamados:", error);
-    }
-};
+    useEffect(() => {
+        const carregarFiltros = async () => {
+            try {
+                // Carrega usuários e setores em paralelo para mais eficiência
+                const [dataUsuarios, dataSetores] = await Promise.all([
+                    apiFetch("/usuarios"),
+                    apiFetch("/chamados/setores")
+                ]);
+                setUsuarios(dataUsuarios);
+                setSetores(dataSetores);
+            } catch (error) {
+                setMensagem(error.message || "Erro ao carregar dados para os filtros.");
+            }
+        };
+        carregarFiltros();
+    }, []);
 
     const buscarChamados = async () => {
+        setMensagem("");
+        setFiltrado(true);
         try {
-            setFiltrado(true); // Marca como filtrado ao clicar no botão
-
-            let url = "http://localhost:3000/chamados/status/resolvido";
-            const queryParams = [];
-            if (usuarioId) queryParams.push(`usuarioId=${usuarioId}`);
-            if (setor) queryParams.push(`setor=${encodeURIComponent(setor)}`);
-            if (queryParams.length > 0) {
-                url += `?${queryParams.join("&")}`;
-            }
-
-            const response = await fetch(url, {
-                credentials: "include",
-            });
-
-            if (!response.ok) throw new Error("Erro na requisição");
-
-            const data = await response.json();
+            // 2. Montamos os parâmetros de busca de forma mais limpa
+            const params = new URLSearchParams();
+            if (usuarioId) params.append('usuarioId', usuarioId);
+            if (setor) params.append('setor', setor);
+            
+            const queryString = params.toString();
+            // O endpoint já busca apenas os resolvidos, os filtros são adicionais
+            const endpoint = `/chamados/status/resolvido${queryString ? `?${queryString}` : ''}`;
+            
+            const data = await apiFetch(endpoint);
             setChamados(data);
+
         } catch (error) {
-            console.error("Erro ao buscar chamados resolvidos:", error);
+            setMensagem(error.message || "Erro ao buscar chamados resolvidos.");
+            setChamados([]); // Garante que a tabela seja limpa em caso de erro
         }
     };
 
@@ -71,24 +63,20 @@ export default function RelatorioResolvidosPorUsuarioOuSetor() {
             chamado.descricao,
             chamado.setor,
             chamado.solicitante?.nome || "Desconhecido",
-            new Date(chamado.dataAbertura).toLocaleString(),
-            new Date(chamado.dataFechamento).toLocaleString(),
+            new Date(chamado.dataAbertura).toLocaleString('pt-BR'),
+            new Date(chamado.dataFechamento).toLocaleString('pt-BR'),
         ]);
 
         autoTable(doc, {
             startY: 25,
-            head: [["ID", "Titulo", "Descrição", "Setor", "Solicitante", "Abertura", "Fechamento"]],
+            head: [["ID", "Título", "Descrição", "Setor", "Solicitante", "Abertura", "Fechamento"]],
             body: rows,
             styles: { fontSize: 8 },
+            headStyles: { fillColor: [41, 128, 185] }, // Adiciona uma cor ao cabeçalho
         });
 
-        doc.save("relatorio_chamados_resolvidos_por_usuario_ou_setor.pdf");
+        doc.save("relatorio_chamados_resolvidos.pdf");
     };
-
-    useEffect(() => {
-        buscarUsuarios();
-        buscarSetores();
-    }, []);
 
     return (
         <div className="relatorio-container">
